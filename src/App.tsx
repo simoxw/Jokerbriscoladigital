@@ -10,6 +10,7 @@ import ScoreBoard from './components/ScoreBoard';
 import HistoryPanel from './components/HistoryPanel';
 import DifficultyPanel from './components/DifficultyPanel';
 import ItalianCard from './components/ItalianCard';
+import { preloadAllCards } from './cardPreloader';
 
 // Configurazione Socket.IO
 const socket: Socket = io({
@@ -67,6 +68,11 @@ const applyCardPlay = (prev: MatchState, card: Card, playerId: number): { newSta
 };
 
 const App: React.FC = () => {
+  useEffect(() => {
+    preloadAllCards().then(() => {
+      console.log("🃏 Carte precaricate con successo!");
+    });
+  }, []);
   const [view, setView] = useState<'menu' | 'rules' | 'game' | 'online_menu'>('menu');
   const [matchState, setMatchState] = useState<MatchState | null>(null);
   const [message, setMessage] = useState("Benvenuto!");
