@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card } from '../types';
 import { getSuitIcon, getSuitColor } from '../constants';
@@ -8,15 +7,17 @@ interface ItalianCardProps {
   onClick?: () => void;
   isHidden?: boolean;
   isSmall?: boolean;
-  isFluid?: boolean; // New prop for responsive sizing
+  isFluid?: boolean; 
   disabled?: boolean;
-  rotation?: number; // New prop for Briscola rotation
+  rotation?: number; 
 }
 
 const ItalianCard: React.FC<ItalianCardProps> = ({ card, onClick, isHidden, isSmall, isFluid, disabled, rotation = 0 }) => {
   const [imgError, setImgError] = useState(false);
 
-  // Define size classes based on props
+  // Determina la base del percorso (vuota in locale, '/Jokerbriscoladigital/' su GitHub)
+  const baseUrl = import.meta.env.BASE_URL;
+
   let sizeClasses = "";
   if (isFluid) {
     sizeClasses = "w-full h-full";
@@ -41,7 +42,9 @@ const ItalianCard: React.FC<ItalianCardProps> = ({ card, onClick, isHidden, isSm
 
   const suitIcon = getSuitIcon(card.suit);
   const suitColor = getSuitColor(card.suit);
-  const imagePath = `/assets/cards/${card.suit}/${card.rank}.png`;
+  
+  // SOLUZIONE FINALE: baseUrl aggiunge automaticamente il prefisso necessario
+  const imagePath = `${baseUrl}assets/cards/${card.suit}/${card.rank}.png`;
 
   return (
     <div 
