@@ -12,6 +12,8 @@ import DifficultyPanel from './components/DifficultyPanel';
 import OnlineMenu from './components/OnlineMenu';
 import Rules from './components/Rules';
 import MainMenu from './components/MainMenu';
+import IAIndicator from './components/IAIndicator';
+import GameDialogs from './components/GameDialogs';
 import ItalianCard from './components/ItalianCard';
 import { preloadAllCards } from './cardPreloader';
 
@@ -25,21 +27,6 @@ const socket: Socket = io('http://localhost:3000', {
   timeout: 10000
 });
 
-const IAIndicator = ({ player, isTurn, isWinner }: { player: PlayerData, isTurn: boolean, isWinner: boolean }) => {
-  if (!player) return <div className="w-12"></div>;
-
-  return (
-    <div className={`relative flex flex-col items-center transition-all duration-300 ${isTurn ? 'opacity-100 scale-110' : 'opacity-50 scale-90'}`}>
-      {isWinner && <div className="absolute -top-4 text-2xl animate-bounce z-10 drop-shadow-md">👑</div>}
-      <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 shadow-lg mb-1 ${isTurn ? 'border-amber-400 bg-amber-500 text-black shadow-amber-500/40' : 'border-white/10 bg-white/5 text-white/40'}`}>
-        {player.name.substring(0, 2).toUpperCase()}
-      </div>
-      <div className={`text-[8px] font-black uppercase tracking-widest ${isTurn ? 'text-amber-400' : 'text-white/30'}`}>
-        {player.name}
-      </div>
-    </div>
-  );
-};
 
 const updateRoles = (jokerId: number, players: PlayerData[]): PlayerData[] => players.map(p => ({ ...p, role: p.id === jokerId ? 'JOKER' : 'ALLY' }));
 
@@ -623,40 +610,24 @@ const App: React.FC = () => {
 
           <div className="flex-1 relative flex flex-col justify-end overflow-hidden">
             <GameTable game={matchState} onCardClick={handleLocalCardPlayed} myPlayerId={myOnlineIndex} />
-            {gameMode === 'OFFLINE' && matchState.waitingForNextTrick && matchState.tempWinnerId !== null && (
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
-                <button onClick={() => completeTrick(matchState.tempWinnerId!)} className="bg-amber-500 text-black font-black uppercase text-sm py-4 px-10 rounded-full shadow-[0_0_30px_rgba(251,191,36,0.6)] border-4 border-white animate-pulse hover:scale-105 transition-transform active:scale-95">Raccogli</button>
-              </div>
-            )}
           </div>
 
           {showHistory && <HistoryPanel history={matchState.history} onClose={() => setShowHistory(false)} />}
           {showDifficulty && <DifficultyPanel current={difficulty} onSelect={(d) => { setDifficulty(d); setShowDifficulty(false); }} onClose={() => setShowDifficulty(false)} />}
 
-          {showRestartConfirm && (
-            <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-6 z-[200] animate-fade-in">
-              <div className="bg-[#042614] border-2 border-blue-500 rounded-3xl p-8 w-full max-w-xs shadow-2xl text-center">
-                <h2 className="text-2xl font-cinzel text-blue-400 font-bold mb-4">Riavvia Partita?</h2>
-                <div className="flex flex-col gap-3">
-                  <button onClick={() => { if (gameMode === 'ONLINE') { if (isHost) startOnlineMatchAsHost(); else alert("Solo l'host può riavviare."); } else { startNewMatch('OFFLINE'); } setShowRestartConfirm(false); }} className="py-4 bg-blue-600 hover:bg-blue-500 rounded-2xl font-black uppercase tracking-widest transition-all">Sì, Riavvia</button>
-                  <button onClick={() => setShowRestartConfirm(false)} className="py-4 bg-white/5 hover:bg-white/10 rounded-2xl font-bold uppercase tracking-widest text-slate-400 transition-all">Annulla</button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {matchState.phase === 'MATCH_END' && (
-            <div className="fixed inset-0 bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center p-10 z-[150]">
-              <h2 className="text-4xl font-cinzel text-amber-500 font-bold mb-4 text-center tracking-widest">FINE MANO</h2>
-              <div className="text-2xl text-white mb-10 text-center">{message}</div>
-              {(gameMode === 'OFFLINE' || isHost) ? (
-                <button onClick={() => gameMode === 'ONLINE' ? startOnlineMatchAsHost() : startNewMatch('OFFLINE')} className="w-full max-w-xs py-5 bg-amber-600 rounded-2xl font-black uppercase tracking-[0.2em] shadow-2xl hover:bg-amber-500 transition-all border-b-4 border-amber-800 active:translate-y-1">Prossima Mano</button>
-              ) : (
-                <div className="text-white/50 text-sm animate-pulse">In attesa dell'Host...</div>
-              )}
-              <button onClick={() => setView('menu')} className="mt-6 text-white/60 uppercase font-bold hover:text-white transition-colors">Menu Iniziale</button>
-            </div>
-          )}
+          <GameDialogs
+            matchState={matchState}
+            gameMode={gameMode}
+            isHost={isHost}
+            message={message}
+            showRestartConfirm={showRestartConfirm}
+            setShowRestartConfirm={setShowRestartConfirm}
+            startNewMatch={startNewMatch}
+            startOnlineMatchAsHost={startOnlineMatchAsHost}
+            completeTrick={completeTrick}
+            setView={setView}
+            socket={socket}
+          />
         </div>
       )}
     </div>

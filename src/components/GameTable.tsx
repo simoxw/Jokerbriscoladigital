@@ -15,7 +15,7 @@ const RoleBadge = ({ role }: { role: PlayerRole }) => {
   const isJoker = role === 'JOKER';
   return (
     <div className={`mt-1 px-1.5 py-0.5 rounded text-[7px] font-black uppercase tracking-tighter shadow-sm border transition-all ${isJoker
-      ? 'bg-amber-500 text-black border-amber-300 shadow-amber-500/40 animate-pulse'
+      ? 'bg-fuchsia-600 text-white border-fuchsia-400 shadow-fuchsia-500/40 animate-pulse'
       : 'bg-blue-600 text-white border-blue-400 opacity-80'
       }`}>
       {role === 'JOKER' ? '🃏 JOKER' : '🛡️ ALLEATO'}
@@ -56,7 +56,8 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
       return 'border-amber-400 shadow-[0_0_40px_rgba(251,191,36,0.8)] scale-110 z-20 bg-amber-900/20';
     }
     if (isJoker && hasCard) {
-      return 'border-amber-500 shadow-[0_0_25px_rgba(245,158,11,0.6)] ring-1 ring-amber-400 z-10';
+      // Usiamo una tonalità Viola/Fucsia per il Joker per distinguerlo dall'Oro del vincitore
+      return 'border-fuchsia-500 shadow-[0_0_25px_rgba(192,38,211,0.6)] ring-1 ring-fuchsia-400 z-10';
     }
     return 'border-white/5';
   };
