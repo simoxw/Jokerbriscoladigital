@@ -23,7 +23,7 @@ Apri il terminale nella cartella del progetto e lancia:
 ```bash
 npm install
 
-3. Avvio in Modalità Sviluppo
+### 3. Avvio in Modalità Sviluppo
 Per far funzionare il gioco completo in locale, devi avviare due terminali:
 Terminale 1 (Frontend - React/Vite):
 npm run dev
@@ -43,18 +43,21 @@ Attiva GitHub Pages dalle impostazioni della repo puntando alla cartella /root.
 Backend (Render / Railway):
 Carica il file server.js su un servizio di hosting (es. Render.com).
 Assicurati di aggiornare l'URL del socket in App.tsx con l'indirizzo fornito dal provider.
+
 📂 Struttura del Progetto
 App.tsx: Cuore dell'applicazione e gestione degli stati.
 server.js: Server Node.js per la gestione delle stanze e del multiplayer.
 components/: Contiene tutti gli elementi dell'interfaccia (Tavolo, Carte, Score).
 cardPreloader.ts: Logica per il caricamento preventivo delle immagini delle carte.
 assets/: Immagini, suoni e stili CSS.
+
 🛠️ Tecnologie Utilizzate
 React 18 (Vite)
 TypeScript
 Tailwind CSS (per lo styling)
 Socket.io (per la comunicazione real-time)
 Node.js & Express (per il backend)
+
 📝 Note per lo Sviluppo
 Ogni volta che modifichi i file .tsx, ricorda di rigenerare la build con npm run build se vuoi vedere le modifiche sulla versione pubblicata su GitHub Pages.
 Per il corretto funzionamento online, assicurati che la policy CORS nel file server.js includa l'indirizzo della tua pagina GitHub.
