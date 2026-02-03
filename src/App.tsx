@@ -16,6 +16,7 @@ import IAIndicator from './components/IAIndicator';
 import GameDialogs from './components/GameDialogs';
 import ItalianCard from './components/ItalianCard';
 import { preloadAllCards } from './cardPreloader';
+import { audioManager } from './utils/audio';
 
 // Configurazione Socket.IO
 const socket: Socket = io('http://localhost:3000', {
@@ -75,6 +76,15 @@ const App: React.FC = () => {
 
   const [gameMode, setGameMode] = useState<'OFFLINE' | 'ONLINE'>('OFFLINE');
   const [isConnected, setIsConnected] = useState(socket.connected);
+
+  const [isMuted, setIsMuted] = useState(() => {
+    return localStorage.getItem('joker_is_muted') === 'true';
+  });
+
+  useEffect(() => {
+    audioManager.setMuted(isMuted);
+    localStorage.setItem('joker_is_muted', isMuted.toString());
+  }, [isMuted]);
 
   // Player name persistence
   const [playerName, setPlayerName] = useState(() => {
@@ -169,6 +179,7 @@ const App: React.FC = () => {
       const player = gameState.players.find(p => p.id === playerId);
       if (player) {
         setMessage(`${player.name} ha giocato ${card.label}`);
+        audioManager.play('CARD_PLAY');
       }
     });
 
@@ -447,6 +458,11 @@ const App: React.FC = () => {
         socket.emit('update_game_state', { code: roomCode, state: newState });
       }
 
+      // Suono di pesca carte (solo se la partita non è finita)
+      if (!isGameOver) {
+        setTimeout(() => audioManager.play('CARD_DRAW'), 500);
+      }
+
       return newState;
     });
   }, [gameMode, isHost, roomCode]);
@@ -465,6 +481,9 @@ const App: React.FC = () => {
     });
 
     if (gameMode === 'ONLINE') socket.emit('play_card', { code: roomCode, card, playerId: myOnlineIndex });
+
+    // Suono carta giocata localmente
+    audioManager.play('CARD_PLAY');
   }, [matchState, gameMode, myOnlineIndex, roomCode]);
 
   // AI TURN LOGIC (Offline & Online Host)
@@ -511,6 +530,9 @@ const App: React.FC = () => {
             gameState: newState
           });
         }
+
+        // Suono carta IA
+        audioManager.play('CARD_PLAY');
       }, 800);
       return () => clearTimeout(timer);
     }
@@ -587,6 +609,9 @@ const App: React.FC = () => {
             {/* Header Row: Buttons */}
             <div className="flex justify-between items-start mb-2 pr-16">
               <div className="flex gap-2">
+                <button onClick={() => setIsMuted(prev => !prev)} className={`w-9 h-9 ${isMuted ? 'bg-slate-600' : 'bg-green-600'} rounded-xl flex items-center justify-center shadow-lg border ${isMuted ? 'border-slate-400' : 'border-green-400'} text-white transition-colors`} title={isMuted ? "Attiva Audio" : "Muta"}>
+                  {isMuted ? '🔇' : '🔊'}
+                </button>
                 <button onClick={() => setShowHistory(true)} className="w-9 h-9 bg-amber-600 hover:bg-amber-500 rounded-xl flex items-center justify-center shadow-lg border border-amber-400 text-white" title="Cronologia">📊</button>
                 <button onClick={() => setShowDifficulty(true)} className="w-9 h-9 bg-amber-600 hover:bg-amber-500 rounded-xl flex items-center justify-center shadow-lg border border-amber-400 text-white" title="IA">⚙️</button>
                 <button onClick={() => setShowRestartConfirm(true)} className="w-9 h-9 bg-blue-600 hover:bg-blue-500 rounded-xl flex items-center justify-center shadow-lg border border-blue-400 text-white transition-colors" title="Riavvia">🔄</button>

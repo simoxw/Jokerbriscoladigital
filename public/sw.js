@@ -2,7 +2,6 @@ const CACHE_NAME = 'joker-briscola-cards-v4'; // Bump version
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
-    './manifest.json',
 ];
 
 self.addEventListener('install', (event) => {

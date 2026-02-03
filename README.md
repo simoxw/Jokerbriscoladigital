@@ -4,10 +4,12 @@ Un gioco di Briscola digitale moderno, fluido e ottimizzato per mobile, con supp
 
 ## 🚀 Caratteristiche
 - **Grafica Avanzata**: Effetti visivi curati, animazioni fluide e design responsive.
-- **Precaricamento Asset**: Sistema di caching delle immagini per evitare lo schermo nero durante le partite.
+- **Ottimizzazione Immagini (WebP)**: Tutte le carte sono in formato WebP, riducendo il peso del 90% per un caricamento fulmineo su mobile.
+- **Super Cache (Service Worker)**: Caching aggressivo degli asset per gioco istantaneo e supporto offline parziale.
+- **Distinzione Visiva Joker**: Nuovo tema colore Viola/Fucsia per il Joker per distinguerlo chiaramente dal vincitore della mano (Oro).
 - **Intelligenza Artificiale**: Tre livelli di difficoltà per la modalità Offline.
 - **Multiplayer Online**: Crea stanze private e gioca con i tuoi amici in tempo reale.
-- **Ottimizzazione Mobile**: Interfaccia studiata per essere giocata comodamente da smartphone.
+- **Architettura Modulare**: Codice React pulito e diviso in componenti riutilizzabili.
 
 ---
 
@@ -98,10 +100,13 @@ Il progetto è strutturato per essere ospitato in modo ibrido su GitHub Pages (f
 │       ├── cards/          # Immagini delle carte
 │       └── sounds/         # Effetti sonori
 ├── src/                    # Codice sorgente React/TypeScript
-│   ├── components/         # Componenti UI (GameTable, ItalianCard, etc.)
+│   ├── components/         # Moduli: GameTable, GameDialogs, IAIndicator,
+│   │                       # ItalianCard, MainMenu, OnlineMenu, Rules,
+│   │                       # ScoreBoard, StatusPanel, DifficultyPanel, HistoryPanel
 │   ├── ai.ts               # Logica IA per modalità offline
-│   ├── App.tsx             # Componente principale
-│   ├── main.tsx            # Entry point React
+│   ├── App.tsx             # Stato globale e gestione Socket
+│   ├── main.tsx            # Entry point e Service Worker
+│   ├── cardPreloader.ts    # Ottimizzazione asset WebP
 │   └── types.ts            # Definizioni TypeScript
 ├── server.js               # Server Node.js per multiplayer
 ├── dev-runner.js           # Script per avvio sviluppo
@@ -111,17 +116,17 @@ Il progetto è strutturato per essere ospitato in modo ibrido su GitHub Pages (f
 ```
 
 ### File Chiave
-- `App.tsx`: Gestione stati globali e routing tra modalità.
-- `server.js`: Logica server per stanze multiplayer e Socket.io.
-- `GameScene.ts`: Logica di gioco principale.
-- `cardPreloader.ts`: Caricamento ottimizzato delle immagini.
+- `App.tsx`: Cuore dell'applicazione, gestisce la comunicazione Socket.io e lo stato del match.
+- `GameTable.tsx`: Gestisce la disposizione dei giocatori e le carte sul tavolo.
+- `GameDialogs.tsx`: Gestisce pop-up, fine partita e interazioni di sistema.
+- `ai.ts`: Algoritmi per il comportamento dei giocatori IA.
 
 ---
 
 ## 🛠️ Tecnologie Utilizzate
 - **Frontend**: React 18, TypeScript, Vite, Tailwind CSS
 - **Backend**: Node.js, Express, Socket.io
-- **Grafica**: Phaser.js per animazioni e rendering
+- **Optimizzazione**: Service Workers (PWA), WebP Images
 - **Styling**: Tailwind CSS con font Google Fonts (Cinzel, Inter)
 
 ---
