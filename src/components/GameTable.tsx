@@ -142,7 +142,7 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
       </div>
 
       {/* 2. HAND AREA */}
-      <div className={`bg-[#02120a] pb-4 pt-2 px-2 border-t border-white/10 mt-auto transition-opacity duration-300 relative z-30 ${waitingForNextTrick ? 'opacity-40 grayscale pointer-events-none' : 'opacity-100'}`}>
+      <div className={`bg-[#02120a] pb-4 pt-2 px-2 border-t border-white/10 mt-4 transition-opacity duration-300 relative z-30 ${waitingForNextTrick ? 'opacity-40 grayscale pointer-events-none' : 'opacity-100'}`}>
         <div className="flex justify-center gap-2 h-32 items-end">
           {me.hand.map((card) => (
             <div key={card.id} className={`transform transition-all duration-300 w-24 h-40 ${turnIndex === myIndex ? 'hover:-translate-y-4 cursor-pointer active:scale-95' : 'opacity-80'}`}>
