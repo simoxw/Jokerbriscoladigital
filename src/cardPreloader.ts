@@ -18,7 +18,7 @@ export const preloadAllCards = (): Promise<void> => {
   if (isPreloading && preloadPromise) return preloadPromise;
 
   isPreloading = true;
-  
+
   // Recupera automaticamente "/" in locale e "/Jokerbriscoladigital/" online
   const baseUrl = import.meta.env.BASE_URL;
 
@@ -43,7 +43,7 @@ export const preloadAllCards = (): Promise<void> => {
       for (let i = 1; i <= maxCards; i++) {
         const img = new Image();
         // COSTRUZIONE PERCORSO DINAMICO
-        const src = `${baseUrl}assets/cards/${suit}/${i}.png`;
+        const src = `${baseUrl}assets/cards/${suit}/${i}.webp`;
         img.src = src;
 
         img.decode()
@@ -54,18 +54,18 @@ export const preloadAllCards = (): Promise<void> => {
           .catch((err) => {
             console.warn(`⚠️ Errore decode su ${src}, provando onload`, err);
             if (img.complete) {
+              processedCount++;
+              checkComplete();
+            } else {
+              img.onload = () => {
                 processedCount++;
                 checkComplete();
-            } else {
-                img.onload = () => {
-                    processedCount++;
-                    checkComplete();
-                };
-                img.onerror = () => {
-                    errorCount++;
-                    processedCount++;
-                    checkComplete();
-                };
+              };
+              img.onerror = () => {
+                errorCount++;
+                processedCount++;
+                checkComplete();
+              };
             }
           });
       }

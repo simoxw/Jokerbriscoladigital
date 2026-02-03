@@ -7,9 +7,9 @@ interface ItalianCardProps {
   onClick?: () => void;
   isHidden?: boolean;
   isSmall?: boolean;
-  isFluid?: boolean; 
+  isFluid?: boolean;
   disabled?: boolean;
-  rotation?: number; 
+  rotation?: number;
 }
 
 const ItalianCard: React.FC<ItalianCardProps> = ({ card, onClick, isHidden, isSmall, isFluid, disabled, rotation = 0 }) => {
@@ -31,7 +31,7 @@ const ItalianCard: React.FC<ItalianCardProps> = ({ card, onClick, isHidden, isSm
 
   if (isHidden) {
     return (
-      <div 
+      <div
         className={`${sizeClasses} bg-slate-800 rounded-xl border-2 border-amber-600/30 flex items-center justify-center shadow-2xl overflow-hidden`}
         style={rotationStyle}
       >
@@ -42,12 +42,12 @@ const ItalianCard: React.FC<ItalianCardProps> = ({ card, onClick, isHidden, isSm
 
   const suitIcon = getSuitIcon(card.suit);
   const suitColor = getSuitColor(card.suit);
-  
+
   // SOLUZIONE FINALE: baseUrl aggiunge automaticamente il prefisso necessario
-  const imagePath = `${baseUrl}assets/cards/${card.suit}/${card.rank}.png`;
+  const imagePath = `${baseUrl}assets/cards/${card.suit}/${card.rank}.webp`;
 
   return (
-    <div 
+    <div
       onClick={!disabled ? onClick : undefined}
       style={rotationStyle}
       className={`
@@ -59,10 +59,10 @@ const ItalianCard: React.FC<ItalianCardProps> = ({ card, onClick, isHidden, isSm
       `}
     >
       {!imgError ? (
-        <img 
-          src={imagePath} 
-          alt={card.label} 
-          className="w-full h-full object-fill" 
+        <img
+          src={imagePath}
+          alt={card.label}
+          className="w-full h-full object-fill"
           onError={() => setImgError(true)}
         />
       ) : (
@@ -78,7 +78,7 @@ const ItalianCard: React.FC<ItalianCardProps> = ({ card, onClick, isHidden, isSm
               {suitIcon}
             </div>
           </div>
-           <div className="w-full flex justify-between px-1 font-bold rotate-180">
+          <div className="w-full flex justify-between px-1 font-bold rotate-180">
             <span className="leading-none">{card.rank === 1 ? 'A' : card.rank === 3 ? '3' : card.rank >= 8 ? card.label[0] : card.rank}</span>
             <span className={`${suitColor} leading-none`}>{suitIcon}</span>
           </div>
