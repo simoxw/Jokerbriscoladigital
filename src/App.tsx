@@ -10,6 +10,8 @@ import ScoreBoard from './components/ScoreBoard';
 import HistoryPanel from './components/HistoryPanel';
 import DifficultyPanel from './components/DifficultyPanel';
 import OnlineMenu from './components/OnlineMenu';
+import Rules from './components/Rules';
+import MainMenu from './components/MainMenu';
 import ItalianCard from './components/ItalianCard';
 import { preloadAllCards } from './cardPreloader';
 
@@ -543,17 +545,11 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#1e453e] to-[#0b2922] text-white font-sans flex flex-col items-center overflow-hidden">
 
       {view === 'menu' && (
-        <div className="flex flex-col items-center justify-center min-h-screen space-y-8 p-6 text-center w-full max-w-sm">
-          <div className="w-40 h-40 bg-amber-500/20 rounded-full flex items-center justify-center border-4 border-amber-500 shadow-[0_0_40px_rgba(251,191,36,0.4)] animate-pulse">
-            <span className="text-7xl">🃏</span>
-          </div>
-          <h1 className="text-4xl font-cinzel font-bold text-amber-500 tracking-widest drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">JOKER BRISCOLA</h1>
-          <div className="flex flex-col gap-3 w-full">
-            <button onClick={() => startNewMatch('OFFLINE', true)} className="py-4 bg-amber-600 hover:bg-amber-500 rounded-2xl font-bold text-lg shadow-xl transition-all uppercase tracking-widest border-b-4 border-amber-800">Gioca Offline</button>
-            <button onClick={goToOnlineMenu} className="py-4 bg-amber-600 hover:bg-amber-500 rounded-2xl font-bold text-lg shadow-xl transition-all uppercase tracking-widest border-b-4 border-amber-800">Modalità Online</button>
-            <button onClick={() => setView('rules')} className="py-4 bg-green-900/40 border border-white/10 hover:bg-green-800/40 rounded-2xl font-bold text-lg transition-all uppercase tracking-widest">Regolamento</button>
-          </div>
-        </div>
+        <MainMenu
+          startNewMatch={startNewMatch}
+          goToOnlineMenu={goToOnlineMenu}
+          setView={setView}
+        />
       )}
 
       {view === 'online_menu' && (
@@ -580,62 +576,7 @@ const App: React.FC = () => {
       )}
 
       {view === 'rules' && (
-        <div className="flex flex-col h-screen w-full max-w-md bg-[#042614] text-slate-200 overflow-hidden relative">
-          <div className="p-6 pb-2 border-b border-white/10 shrink-0 bg-[#042614] z-10">
-            <h2 className="text-3xl font-cinzel text-amber-500 font-bold tracking-widest">Regolamento</h2>
-            <button onClick={() => setView('menu')} className="mt-4 w-full py-2 bg-amber-600 rounded font-bold uppercase">Torna al Menu</button>
-          </div>
-
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
-            <section>
-              <h3 className="text-amber-500 font-bold uppercase tracking-widest mb-2 border-b border-white/10 pb-1">Obiettivo</h3>
-              <p className="text-sm leading-relaxed text-slate-300">
-                Il gioco si svolge in 3 giocatori. È una sfida tutti contro tutti con ruoli nascosti.
-                <br /><br />
-                <strong className="text-white">JOKER:</strong> Gioca da solo. Vince se totalizza almeno <strong className="text-amber-400">51 punti</strong>.
-                <br />
-                <strong className="text-white">ALLEATI:</strong> Giocano in coppia. Vincono se totalizzano insieme almeno <strong className="text-blue-400">71 punti</strong>.
-              </p>
-            </section>
-
-            <section>
-              <h3 className="text-amber-500 font-bold uppercase tracking-widest mb-2 border-b border-white/10 pb-1">Ruoli</h3>
-              <p className="text-sm leading-relaxed text-slate-300">
-                A inizio partita viene estratta una <strong className="text-amber-400">Briscola</strong> visibile a tutti.
-                <br /><br />
-                Il <strong className="text-amber-500">JOKER</strong> è colui che gioca per primo una carta del seme di Briscola. Fino a quel momento, i ruoli sono segreti!
-                <br />
-                Gli altri due giocatori sono gli <strong className="text-blue-400">ALLEATI</strong> e devono collaborare per impedire al Joker di fare punti, ma senza sapere chi è il compagno all'inizio.
-              </p>
-            </section>
-
-            <section>
-              <h3 className="text-amber-500 font-bold uppercase tracking-widest mb-2 border-b border-white/10 pb-1">Valore Carte</h3>
-              <ul className="text-sm space-y-2 text-slate-300">
-                <li className="flex justify-between border-b border-white/5 pb-1"><span>Asso (1)</span> <span className="font-bold text-white">11 punti</span></li>
-                <li className="flex justify-between border-b border-white/5 pb-1"><span>Tre (3)</span> <span className="font-bold text-white">10 punti</span></li>
-                <li className="flex justify-between border-b border-white/5 pb-1"><span>Re (10)</span> <span className="font-bold text-white">4 punti</span></li>
-                <li className="flex justify-between border-b border-white/5 pb-1"><span>Cavallo (9)</span> <span className="font-bold text-white">3 punti</span></li>
-                <li className="flex justify-between border-b border-white/5 pb-1"><span>Fante (8)</span> <span className="font-bold text-white">2 punti</span></li>
-                <li className="flex justify-between"><span>Scartine (2, 4, 5, 6, 7)</span> <span className="font-bold text-white/50">0 punti</span></li>
-              </ul>
-            </section>
-
-            <section>
-              <h3 className="text-amber-500 font-bold uppercase tracking-widest mb-2 border-b border-white/10 pb-1">Svolgimento</h3>
-              <p className="text-sm leading-relaxed text-slate-300">
-                Si distribuiscono 13 carte a testa (l'ultima è la Briscola in tavola).
-                A turno, ogni giocatore cala una carta.
-                <br />
-                Regole di presa classiche della Briscola:
-                <ul className="list-disc list-inside mt-2 pl-2 space-y-1 text-xs text-slate-400">
-                  <li>Vince la carta di Briscola più alta.</li>
-                  <li>Se non c'è Briscola, vince la carta del seme di uscita più alta.</li>
-                </ul>
-              </p>
-            </section>
-          </div>
-        </div>
+        <Rules setView={setView} />
       )}
 
       {view === 'game' && matchState && (
