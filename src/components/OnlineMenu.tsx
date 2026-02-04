@@ -46,9 +46,16 @@ const OnlineMenu: React.FC<OnlineMenuProps> = ({
     return (
         <div className="flex flex-col items-center justify-center min-h-screen p-6 w-full max-w-sm">
             <h2 className="text-3xl font-cinzel text-amber-500 font-bold mb-8 text-center tracking-widest drop-shadow-md">Modalità Online</h2>
-            <div className={`mb-4 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 border ${isConnected ? 'bg-green-900/50 border-green-500 text-green-400' : 'bg-red-900/50 border-red-500 text-red-400'}`}>
-                <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
-                {isConnected ? 'Server Connesso' : 'Server Non Raggiungibile'}
+            <div className={`mb-4 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest flex flex-col items-center gap-1 border ${isConnected ? 'bg-green-900/50 border-green-500 text-green-400' : 'bg-red-900/50 border-red-500 text-red-400'}`}>
+                <div className="flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
+                    {isConnected ? 'Server Connesso' : 'Server Non Raggiungibile'}
+                </div>
+                {!isConnected && (
+                    <div className="text-[7px] opacity-70 lowercase font-mono">
+                        Target: {import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000'}
+                    </div>
+                )}
             </div>
 
             <div className="w-full bg-[#113a22] rounded-3xl p-6 shadow-2xl border border-white/5 flex flex-col gap-6">
