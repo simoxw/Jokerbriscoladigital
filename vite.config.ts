@@ -5,10 +5,4 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: '/Jokerbriscoladigital/',
-  server: {
-    hmr: {
-      protocol: 'ws',
-      host: 'localhost',
-    },
-  },
 })

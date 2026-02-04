@@ -8,8 +8,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   </React.StrictMode>,
 )
 
-// Registrazione Service Worker per caching offline
-if ('serviceWorker' in navigator) {
+// Registrazione Service Worker per caching offline (Solo in Produzione)
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
     const baseUrl = import.meta.env.BASE_URL;
     navigator.serviceWorker.register(`${baseUrl}sw.js`)

@@ -19,7 +19,7 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({ players, type, myIndex = 0 }) =
       <div className="flex justify-around items-center text-[10px]">
         {players.map(p => (
           <div key={p.id} className="flex flex-col items-center leading-none">
-            <span className="text-slate-400 scale-90 origin-bottom mb-0.5">{p.index === myIndex ? 'TU' : `I${p.index}`}</span>
+            <span className="text-slate-400 scale-90 origin-bottom mb-0.5">{p.index === myIndex ? 'TU' : p.name.toUpperCase()}</span>
             <span className={`font-mono font-bold text-xs ${p.index === myIndex ? 'text-amber-400' : 'text-white'}`}>
               {isMatch ? p.pointsInMatch : p.totalScore}
             </span>
