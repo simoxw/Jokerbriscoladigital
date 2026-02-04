@@ -2,6 +2,8 @@
 
 Un gioco di Briscola digitale moderno, fluido e ottimizzato per mobile, con supporto per il gioco **Offline** (contro IA) e **Online** (Multiplayer in tempo reale tramite Socket.io).
 
+https://simoxw.github.io/Jokerbriscoladigital/
+
 ## 🚀 Caratteristiche
 - **Grafica Avanzata**: Effetti visivi curati, animazioni fluide e design responsive.
 - **Ottimizzazione Immagini (WebP)**: Tutte le carte sono in formato WebP, riducendo il peso del 90% per un caricamento fulmineo su mobile.
