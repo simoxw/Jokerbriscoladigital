@@ -1,4 +1,4 @@
-const CACHE_NAME = 'joker-briscola-cards-v4'; // Bump version
+const CACHE_NAME = 'joker-briscola-cards-v7'; // Bump version
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -36,31 +36,41 @@ self.addEventListener('fetch', (event) => {
     const { request } = event;
     const url = new URL(request.url);
 
-    // Gestiamo solo gli asset interni o le carte (WebP)
-    // NON intercettiamo domini esterni (come Google Fonts) per evitare problemi CORS
     const isInternal = url.host === location.host;
     const isCardImage = url.pathname.includes('/assets/cards/') || url.pathname.endsWith('.webp');
 
-    if (isInternal || isCardImage) {
+    // Strategia per le CARTE: Cache-First
+    if (isCardImage) {
         event.respondWith(
             caches.match(request).then((res) => {
                 return res || fetch(request).then((fetchRes) => {
-                    // Cache solo se la risposta è valida
-                    if (!fetchRes || fetchRes.status !== 200 || fetchRes.type !== 'basic' && fetchRes.type !== 'cors') {
-                        return fetchRes;
-                    }
                     const responseToCache = fetchRes.clone();
                     caches.open(CACHE_NAME).then((cache) => {
                         cache.put(request, responseToCache);
                     });
                     return fetchRes;
-                }).catch(() => {
-                    // Fallback silenzioso se il fetch fallisce (es. offline)
-                    return res;
                 });
             })
         );
+        return;
     }
-    // Se non è interno o una carta, non chiamiamo respondWith()
-    // Il browser gestirà la richiesta normalmente (ottimo per i font esterni)
+
+    // Strategia per FILE LOGICI (HTML, JS, CSS, JSON): Network-First
+    if (isInternal) {
+        event.respondWith(
+            fetch(request)
+                .then((fetchRes) => {
+                    if (fetchRes && fetchRes.status === 200) {
+                        const responseToCache = fetchRes.clone();
+                        caches.open(CACHE_NAME).then((cache) => {
+                            cache.put(request, responseToCache);
+                        });
+                    }
+                    return fetchRes;
+                })
+                .catch(() => {
+                    return caches.match(request);
+                })
+        );
+    }
 });

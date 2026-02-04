@@ -3,7 +3,7 @@ const ASSETS_TO_CACHE = [
     './',
     './index.html',
     './manifest.json',
-    './icon.png',
+    './assets/icon.png',
 ];
 
 self.addEventListener('install', (event) => {
@@ -39,7 +39,7 @@ self.addEventListener('fetch', (event) => {
     const isInternal = url.host === location.host;
     const isCardImage = url.pathname.includes('/assets/cards/') || url.pathname.endsWith('.webp');
 
-    // Strategia per le CARTE: Cache-First (sono pesanti e non cambiano mai)
+    // Strategia per le CARTE: Cache-First
     if (isCardImage) {
         event.respondWith(
             caches.match(request).then((res) => {
@@ -56,7 +56,6 @@ self.addEventListener('fetch', (event) => {
     }
 
     // Strategia per FILE LOGICI (HTML, JS, CSS, JSON): Network-First
-    // Questo assicura che gli aggiornamenti vengano visti subito se c'è rete
     if (isInternal) {
         event.respondWith(
             fetch(request)
