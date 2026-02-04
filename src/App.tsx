@@ -288,10 +288,11 @@ const App: React.FC = () => {
     const h3 = deck.splice(0, 3);
     const briscola = deck.pop();
 
+    const prevPlayers = matchState?.players;
     const players: PlayerData[] = [
-      { id: 0, name: connectedPlayers.find(p => p.index === 0)?.name || 'Host', index: 0, handSize: 3, hand: h1, role: 'NONE', pointsInMatch: 0, totalScore: 0, capturedCards: [] },
-      { id: 1, name: p2IsHuman ? p2IsHuman.name : 'IA1', index: 1, handSize: 3, hand: h2, role: 'NONE', pointsInMatch: 0, totalScore: 0, capturedCards: [] },
-      { id: 2, name: p3IsHuman ? p3IsHuman.name : 'IA2', index: 2, handSize: 3, hand: h3, role: 'NONE', pointsInMatch: 0, totalScore: 0, capturedCards: [] },
+      { id: 0, name: connectedPlayers.find(p => p.index === 0)?.name || 'Host', index: 0, handSize: 3, hand: h1, role: 'NONE', pointsInMatch: 0, totalScore: prevPlayers?.[0].totalScore || 0, capturedCards: [] },
+      { id: 1, name: p2IsHuman ? p2IsHuman.name : 'IA1', index: 1, handSize: 3, hand: h2, role: 'NONE', pointsInMatch: 0, totalScore: prevPlayers?.[1].totalScore || 0, capturedCards: [] },
+      { id: 2, name: p3IsHuman ? p3IsHuman.name : 'IA2', index: 2, handSize: 3, hand: h3, role: 'NONE', pointsInMatch: 0, totalScore: prevPlayers?.[2].totalScore || 0, capturedCards: [] },
     ];
 
     const initialState: MatchState = {
@@ -452,9 +453,14 @@ const App: React.FC = () => {
 
       setMessage(nextMessage);
 
-      // Only Host sends the definitive game state update
+      // 🎯 SINCRONIZZAZIONE ONLINE: Invia SEMPRE lo stato aggiornato dopo ogni trick
       if (gameMode === 'ONLINE' && isHost) {
-        console.log('[CLIENT] 📡 Host invia update_game_state dopo completamento trick:', newState);
+        console.log('[CLIENT] 📡 Host sincronizza stato dopo trick:');
+        console.log('  - Vincitore:', winnerName, '(ID', winnerId, ')');
+        console.log('  - Punti Mano:', updatedPlayers.map(p => `${p.name}(${p.id}): ${p.pointsInMatch}`).join(', '));
+        console.log('  - Punti Totali:', updatedPlayers.map(p => `${p.name}(${p.id}): ${p.totalScore}`).join(', '));
+        console.log('  - Fase:', newState.phase);
+
         socket.emit('update_game_state', { code: roomCode, state: newState });
       }
 
@@ -621,9 +627,9 @@ const App: React.FC = () => {
 
             {/* Info Row: Scoreboards (Narrower width to accommodate Briscola) */}
             <div className="flex flex-col gap-1 w-[58%] z-10">
-              <div className="w-full h-12"><ScoreBoard players={matchState.players} type="match" /></div>
+              <div className="w-full h-12"><ScoreBoard players={matchState.players} type="match" myIndex={myOnlineIndex} /></div>
               {gameMode === 'ONLINE' && <div className="text-center text-blue-300 text-[8px] uppercase font-bold">Room: {roomCode}</div>}
-              <div className="w-full h-12"><ScoreBoard players={matchState.players} type="total" /></div>
+              <div className="w-full h-12"><ScoreBoard players={matchState.players} type="total" myIndex={myOnlineIndex} /></div>
             </div>
           </div>
 
