@@ -6,10 +6,10 @@ Un gioco di Briscola digitale moderno, fluido e ottimizzato per mobile, con supp
 - **Grafica Avanzata**: Effetti visivi curati, animazioni fluide e design responsive.
 - **Ottimizzazione Immagini (WebP)**: Tutte le carte sono in formato WebP, riducendo il peso del 90% per un caricamento fulmineo su mobile.
 - **Super Cache (Service Worker)**: Caching aggressivo degli asset per gioco istantaneo e supporto offline parziale.
-- **Distinzione Visiva Joker**: Nuovo tema colore Viola/Fucsia per il Joker per distinguerlo chiaramente dal vincitore della mano (Oro).
-- **Intelligenza Artificiale**: Tre livelli di difficoltà per la modalità Offline.
-- **Multiplayer Online**: Crea stanze private e gioca con i tuoi amici in tempo reale.
-- **Architettura Modulare**: Codice React pulito e diviso in componenti riutilizzabili.
+- **Effetti Sonori Reali**: Audio integrato per giocata e pesca carte con gestione intelligente del Silenzioso (Mute).
+- **Supporto PWA (App)**: Installabile su smartphone come una vera applicazione con icona personalizzata.
+- **Distinzione Visiva Joker**: Nuovo tema colore Viola/Fucsia per il Joker per distinguerlo chiaramente dall'Oro.
+- **Multiplayer Online**: Connessione dinamica tra locale e server remoto (Render).
 
 ---
 
@@ -140,10 +140,31 @@ Il progetto è strutturato per essere ospitato in modo ibrido su GitHub Pages (f
 
 ---
 
+---
+
+## 🚀 Guida al Deployment Online
+
+### 1. Configurazione Render (Backend)
+1. Carica il progetto su Render come **Web Service**.
+2. **Start Command**: `node server.js`
+3. Il server risponderà a `https://jokerbriscoladigital.onrender.com`.
+
+### 2. Configurazione Frontend (GitHub Pages)
+Per fare in modo che il sito si colleghi al server giusto su GitHub:
+1. Crea un file `.env.production` nella radice del progetto locale.
+2. Aggiungi la riga: `VITE_SOCKET_URL=https://jokerbriscoladigital.onrender.com`
+3. Esegui `npm run build`.
+4. Copia il contenuto di `dist` nel tuo repository GitHub e fai il push.
+
+### 3. Installazione PWA
+- Su **Chrome/Android**: Apparirà il pulsante "Installa sul Telefono" nel menu.
+- Su **iOS**: Clicca "Condividi" -> "Aggiungi a Home".
+
+---
+
 ## 🐛 Troubleshooting
-- **Errore "Cannot resolve module"**: Assicurati di aver eseguito `npm install`.
-- **Pagina bianca**: Controlla che `index.html` punti a `/src/main.tsx` e che la cartella `assets/` sia stata rimossa.
-- **Socket non connesso**: Verifica che il server backend sia attivo su porta 3000.
-- **Immagini non caricano**: Assicurati che i file in `public/assets/` esistano e abbiano i percorsi corretti.
+- **Audio non parte**: Molti browser bloccano l'audio finché l'utente non interagisce (cliccando un pulsante).
+- **Pulsante Installa non appare**: Assicurati di essere su HTTPS e di aver ricaricato la pagina almeno una volta.
+- **Errore Connessione**: Verifica che il server su Render non sia in modalità "sleep" (richiede ~30s per riattivarsi).
 
 Per ulteriori problemi, apri una issue su GitHub.

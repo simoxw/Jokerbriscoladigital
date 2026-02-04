@@ -7,10 +7,14 @@ const path = require('path');
 const app = express();
 const server = http.createServer(app);
 
-// Configurazione CORS permissiva
+// Configurazione CORS
 const io = new Server(server, {
-  cors: { 
-    origin: "*",
+  cors: {
+    origin: [
+      "https://simoxw.github.io",
+      "http://localhost:5173",
+      "http://localhost:3000"
+    ],
     methods: ["GET", "POST"],
     credentials: true
   }
@@ -37,26 +41,26 @@ io.on('connection', (socket) => {
   socket.on('create_room', (playerName) => {
     let roomCode;
     let attempts = 0;
-    
+
     // Ensure uniqueness
     do {
       roomCode = generateRoomCode();
       attempts++;
     } while (rooms[roomCode] && attempts < 10);
 
-    rooms[roomCode] = { 
+    rooms[roomCode] = {
       players: [{ id: socket.id, name: playerName, index: 0 }],
       host: socket.id,
       state: null
     };
-    
+
     socket.join(roomCode);
-    
+
     console.log(`[SERVER] Room Created: ${roomCode} by ${playerName} (${socket.id})`);
-    
+
     // Emit Success to Creator
     socket.emit('room_created', { code: roomCode, myIndex: 0 });
-    
+
     // Broadcast list update immediately
     io.to(roomCode).emit('update_players', rooms[roomCode].players);
   });
@@ -66,7 +70,7 @@ io.on('connection', (socket) => {
     // Sanitize input
     const safeCode = code ? code.trim().toUpperCase() : '';
     console.log(`[SERVER] Join Request: ${name} wants to join '${safeCode}'`);
-    
+
     const room = rooms[safeCode];
 
     if (!room) {
@@ -90,36 +94,36 @@ io.on('connection', (socket) => {
     // Add player to room
     const newIndex = room.players.length;
     const newPlayer = { id: socket.id, name: name, index: newIndex };
-    
+
     room.players.push(newPlayer);
     socket.join(safeCode);
-    
+
     console.log(`[SERVER] ${name} joined ${safeCode} successfully. Players in room:`, room.players.map(p => p.name));
 
     // 1. Tell the joiner they successfully joined with their index and current game state
-    socket.emit('room_joined', { 
-      code: safeCode, 
+    socket.emit('room_joined', {
+      code: safeCode,
       myIndex: newIndex,
       players: room.players,
       gameState: room.state // Send current game state if game already started
     });
-    
+
     // 2. Broadcast to ALL players in room (including the new joiner) the updated player list
     io.to(safeCode).emit('update_players', room.players);
-    
+
     console.log(`[SERVER] Emitted room_joined to ${name}, emitted update_players to room ${safeCode}`);
   });
 
   // 3. Inizia Partita (Solo Host)
   socket.on('start_game', ({ code, initialGameState }) => {
     if (rooms[code] && rooms[code].host === socket.id) {
-        rooms[code].state = initialGameState;
-        console.log(`[SERVER] Game starting in room ${code}, players:`, rooms[code].players.length);
-        console.log(`[SERVER] Broadcasting game_started to all players in room ${code}`);
-        io.to(code).emit('game_started', initialGameState);
-        console.log(`[SERVER] game_started sent successfully`);
+      rooms[code].state = initialGameState;
+      console.log(`[SERVER] Game starting in room ${code}, players:`, rooms[code].players.length);
+      console.log(`[SERVER] Broadcasting game_started to all players in room ${code}`);
+      io.to(code).emit('game_started', initialGameState);
+      console.log(`[SERVER] game_started sent successfully`);
     } else {
-        console.log(`[SERVER] ERROR: Cannot start game - room ${code} not found or socket is not host`);
+      console.log(`[SERVER] ERROR: Cannot start game - room ${code} not found or socket is not host`);
     }
   });
 
@@ -143,20 +147,20 @@ io.on('connection', (socket) => {
 
   // 5. Aggiornamento Stato Partita
   socket.on('update_game_state', ({ code, state }) => {
-     if (rooms[code]) {
-        rooms[code].state = state;
-        console.log(`[SERVER] Game state updated in room ${code}, players in room:`, rooms[code].players.length);
-        console.log(`[SERVER] Broadcasting sync_game_state to all players in room ${code}`);
-        io.to(code).emit('sync_game_state', state);
-        console.log(`[SERVER] sync_game_state sent successfully`);
-     } else {
-        console.log(`[SERVER] ERROR: Room ${code} not found when trying to update game state`);
-     }
+    if (rooms[code]) {
+      rooms[code].state = state;
+      console.log(`[SERVER] Game state updated in room ${code}, players in room:`, rooms[code].players.length);
+      console.log(`[SERVER] Broadcasting sync_game_state to all players in room ${code}`);
+      io.to(code).emit('sync_game_state', state);
+      console.log(`[SERVER] sync_game_state sent successfully`);
+    } else {
+      console.log(`[SERVER] ERROR: Room ${code} not found when trying to update game state`);
+    }
   });
-  
+
   // 6. Disconnessione Gioco
   socket.on('disconnect_game', () => {
-     handleDisconnect(socket);
+    handleDisconnect(socket);
   });
 
   socket.on('disconnect', () => {
@@ -165,27 +169,27 @@ io.on('connection', (socket) => {
 });
 
 function handleDisconnect(socket) {
-    for (const code in rooms) {
-      const room = rooms[code];
-      const wasPlayer = room.players.find(p => p.id === socket.id);
-      
-      if (wasPlayer) {
-        room.players = room.players.filter(p => p.id !== socket.id);
-        socket.leave(code);
-        console.log(`[SERVER] User left room ${code}. Remaining: ${room.players.length}`);
+  for (const code in rooms) {
+    const room = rooms[code];
+    const wasPlayer = room.players.find(p => p.id === socket.id);
 
-        if (room.players.length === 0) {
-          delete rooms[code];
-          console.log(`[SERVER] Room ${code} deleted (empty)`);
-        } else {
-          if (room.host === socket.id) {
-             // If host leaves, next player becomes host
-             room.host = room.players[0].id; 
-          }
-          io.to(code).emit('update_players', room.players);
+    if (wasPlayer) {
+      room.players = room.players.filter(p => p.id !== socket.id);
+      socket.leave(code);
+      console.log(`[SERVER] User left room ${code}. Remaining: ${room.players.length}`);
+
+      if (room.players.length === 0) {
+        delete rooms[code];
+        console.log(`[SERVER] Room ${code} deleted (empty)`);
+      } else {
+        if (room.host === socket.id) {
+          // If host leaves, next player becomes host
+          room.host = room.players[0].id;
         }
+        io.to(code).emit('update_players', room.players);
       }
     }
+  }
 }
 
 const PORT = process.env.PORT || 3000;
