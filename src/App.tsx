@@ -19,7 +19,10 @@ import { preloadAllCards } from './cardPreloader';
 import { audioManager } from './utils/audio';
 
 // Configurazione Socket.IO
-const socket: Socket = io('http://localhost:3000', {
+const socketUrl = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000';
+console.log('[CLIENT] 🔌 Tentativo di connessione a:', socketUrl);
+
+const socket: Socket = io(socketUrl, {
   autoConnect: true,
   reconnection: true,
   reconnectionAttempts: 20,

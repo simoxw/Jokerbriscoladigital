@@ -5,13 +5,12 @@ Un gioco di Briscola digitale moderno, fluido e ottimizzato per mobile, con supp
 https://simoxw.github.io/Jokerbriscoladigital/
 
 ## 🚀 Caratteristiche
-- **Grafica Avanzata**: Effetti visivi curati, animazioni fluide e design responsive.
-- **Ottimizzazione Immagini (WebP)**: Tutte le carte sono in formato WebP, riducendo il peso del 90% per un caricamento fulmineo su mobile.
-- **Super Cache (Service Worker)**: Caching aggressivo degli asset per gioco istantaneo e supporto offline parziale.
-- **Effetti Sonori Reali**: Audio integrato per giocata e pesca carte con gestione intelligente del Silenzioso (Mute).
-- **Supporto PWA (App)**: Installabile su smartphone come una vera applicazione con icona personalizzata.
-- **Distinzione Visiva Joker**: Nuovo tema colore Viola/Fucsia per il Joker per distinguerlo chiaramente dall'Oro.
-- **Multiplayer Online**: Connessione dinamica tra locale e server remoto (Render).
+- **Punteggi Sincronizzati**: Sincronizzazione in tempo reale dei punti mano e torneo tra tutti i client (Host e Guest).
+- **Nomi Reali in ScoreBoard**: Visualizzazione dinamica dei nomi scelti dagli utenti o assegnati dall'IA invece di indici generici.
+- **Strategia Cache Intelligente (Network-First)**: I file dell'app (JS/CSS/HTML) caricano sempre l'ultima versione online se disponibile, garantendo aggiornamenti immediati su mobile senza pulizia cache manuale. 
+- **Ottimizzazione Immagini (WebP)**: Tutte le carte sono in formato WebP, riducendo il peso del 90% (Cache-First per prestazioni ottimali).
+- **Supporto PWA (App)**: Installabile su smartphone con aggiornamenti automatici silenti in background.
+- **Effetti Sonori Reali**: Audio integrato con gestione intelligente del Silenzioso (Mute).
 
 ---
 
@@ -167,6 +166,7 @@ Per fare in modo che il sito si colleghi al server giusto su GitHub:
 ## 🐛 Troubleshooting
 - **Audio non parte**: Molti browser bloccano l'audio finché l'utente non interagisce (cliccando un pulsante).
 - **Pulsante Installa non appare**: Assicurati di essere su HTTPS e di aver ricaricato la pagina almeno una volta.
-- **Errore Connessione**: Verifica che il server su Render non sia in modalità "sleep" (richiede ~30s per riattivarsi).
+- **Modifiche non visibili**: Se dopo un deploy non vedi le novità, chiudi tutte le schede del gioco e riapri. Il Service Worker aggiornerà i file in background grazie alla strategia `Network-First`.
+- **Errore Connessione Locale**: Se testi in locale su porte diverse (es. 5174), assicurati che `server.js` abbia l'origin autorizzato nella config CORS.
 
 Per ulteriori problemi, apri una issue su GitHub.
