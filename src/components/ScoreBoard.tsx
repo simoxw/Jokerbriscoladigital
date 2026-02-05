@@ -12,11 +12,11 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({ players, type, myIndex = 0 }) =
   const isMatch = type === 'match';
 
   return (
-    <div className={`flex flex-col justify-center bg-black/40 px-3 py-1 rounded border border-white/5 w-full h-[48%] ${isMatch ? 'bg-green-900/30' : ''}`}>
-      <div className="text-[9px] font-bold text-amber-500/80 uppercase tracking-wider mb-0.5 border-b border-white/10 pb-0.5 text-center">
+    <div className={`flex flex-col justify-center bg-black/40 px-2.5 py-1 rounded border border-white/5 w-full h-full min-h-0 flex-shrink ${isMatch ? 'bg-green-900/30' : ''}`}>
+      <div className="text-[7.5px] font-bold text-amber-500/80 uppercase tracking-wider mb-0.5 border-b border-white/10 pb-0.5 text-center leading-none">
         {isMatch ? 'Punti Mano' : 'Torneo'}
       </div>
-      <div className="flex justify-around items-center text-[10px]">
+      <div className="flex justify-around items-center text-[9px] mt-0.5">
         {players.map(p => (
           <div key={p.id} className="flex flex-col items-center leading-none">
             <span className="text-slate-400 scale-90 origin-bottom mb-0.5">{p.index === myIndex ? 'TU' : p.name.toUpperCase()}</span>

@@ -598,7 +598,7 @@ const App: React.FC = () => {
 
   return (
     // Updated background to a lighter, professional green gradient
-    <div className="h-screen w-full bg-gradient-to-br from-[#1e453e] to-[#0b2922] text-white font-sans flex flex-col items-center overflow-hidden" style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
+    <div className="h-screen w-full bg-gradient-to-br from-[#1e453e] to-[#0b2922] text-white font-sans flex flex-col items-center overflow-y-auto overflow-x-hidden touch-pan-y" style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
 
       {view === 'menu' && (
         <MainMenu
@@ -636,13 +636,13 @@ const App: React.FC = () => {
       )}
 
       {view === 'game' && matchState && (
-        <div className="relative w-full h-full flex flex-col max-w-[420px] bg-transparent">
+        <div className="relative w-full h-full flex flex-col max-w-[420px] bg-transparent min-h-0 flex-shrink">
           <header className="p-2 bg-black/40 backdrop-blur-md z-30 flex flex-col gap-1 shadow-2xl border-b border-white/10 relative">
 
             {/* Briscola: Positioned Absolute Top-Right, Larger */}
-            <div className="absolute top-2 right-2 flex flex-col items-center bg-black/30 p-1.5 rounded-lg border border-white/10 shadow-xl z-20">
-              <span className="text-[9px] text-amber-500 font-bold uppercase tracking-widest mb-0.5 leading-none">Briscola</span>
-              <div className="w-20 h-32">
+            <div className="absolute top-1.5 right-1.5 flex flex-col items-center bg-black/30 p-1 rounded-lg border border-white/10 shadow-xl z-20">
+              <span className="text-[7.5px] text-amber-500 font-bold uppercase tracking-widest mb-0.5 leading-none">Briscola</span>
+              <div className="w-[18vw] max-w-[80px] aspect-[2/3]">
                 {matchState.briscola ? (
                   <ItalianCard card={matchState.briscola} isFluid />
                 ) : (
@@ -656,29 +656,29 @@ const App: React.FC = () => {
             <div className="flex justify-between items-start gap-2">
               {/* Main Controls - Compact */}
               <div className="flex flex-wrap gap-1.5 flex-1">
-                <button onClick={() => setIsMuted(prev => !prev)} className={`w-9 h-9 ${isMuted ? 'bg-slate-600' : 'bg-green-600'} rounded-xl flex items-center justify-center shadow-lg border ${isMuted ? 'border-slate-400' : 'border-green-400'} text-white transition-colors`} title={isMuted ? "Attiva Audio" : "Muta"}>
+                <button onClick={() => setIsMuted(prev => !prev)} className={`w-8 h-8 ${isMuted ? 'bg-slate-600' : 'bg-green-600'} rounded-lg flex items-center justify-center shadow-lg border ${isMuted ? 'border-slate-400' : 'border-green-400'} text-xs transition-colors`} title={isMuted ? "Attiva Audio" : "Muta"}>
                   {isMuted ? '🔇' : '🔊'}
                 </button>
-                <button onClick={() => setIsVibrationEnabled(prev => !prev)} className={`w-9 h-9 ${!isVibrationEnabled ? 'bg-slate-600' : 'bg-fuchsia-600'} rounded-xl flex items-center justify-center shadow-lg border ${!isVibrationEnabled ? 'border-slate-400' : 'border-fuchsia-400'} text-white transition-colors`} title={isVibrationEnabled ? "Disattiva Vibrazione" : "Attiva Vibrazione"}>
+                <button onClick={() => setIsVibrationEnabled(prev => !prev)} className={`w-8 h-8 ${!isVibrationEnabled ? 'bg-slate-600' : 'bg-fuchsia-600'} rounded-lg flex items-center justify-center shadow-lg border ${!isVibrationEnabled ? 'border-slate-400' : 'border-fuchsia-400'} text-xs transition-colors`} title={isVibrationEnabled ? "Disattiva Vibrazione" : "Attiva Vibrazione"}>
                   {isVibrationEnabled ? '📳' : '📴'}
                 </button>
-                <button onClick={() => setShowHistory(true)} className="w-9 h-9 bg-amber-600 hover:bg-amber-500 rounded-xl flex items-center justify-center shadow-lg border border-amber-400 text-white" title="Cronologia">📊</button>
-                <button onClick={() => setShowDifficulty(true)} className="w-9 h-9 bg-amber-600 hover:bg-amber-500 rounded-xl flex items-center justify-center shadow-lg border border-amber-400 text-white" title="IA">⚙️</button>
-                <button onClick={() => setShowRestartConfirm(true)} className="w-9 h-9 bg-blue-600 hover:bg-blue-500 rounded-xl flex items-center justify-center shadow-lg border border-blue-400 text-white transition-colors" title="Riavvia">🔄</button>
-                <button onClick={() => { setView('menu'); if (gameMode === 'ONLINE') socket.emit('disconnect_game'); }} className="w-9 h-9 bg-red-600 hover:bg-red-500 rounded-xl flex items-center justify-center shadow-lg border border-red-400 text-white font-bold" title="Esci">ESC</button>
+                <button onClick={() => setShowHistory(true)} className="w-8 h-8 bg-amber-600 hover:bg-amber-500 rounded-lg flex items-center justify-center shadow-lg border border-amber-400 text-xs" title="Cronologia">📊</button>
+                <button onClick={() => setShowDifficulty(true)} className="w-8 h-8 bg-amber-600 hover:bg-amber-500 rounded-lg flex items-center justify-center shadow-lg border border-amber-400 text-xs" title="IA">⚙️</button>
+                <button onClick={() => setShowRestartConfirm(true)} className="w-8 h-8 bg-blue-600 hover:bg-blue-500 rounded-lg flex items-center justify-center shadow-lg border border-blue-400 text-xs transition-colors" title="Riavvia">🔄</button>
+                <button onClick={() => { setView('menu'); if (gameMode === 'ONLINE') socket.emit('disconnect_game'); }} className="w-8 h-8 bg-red-600 hover:bg-red-500 rounded-lg flex items-center justify-center shadow-lg border border-red-400 text-[10px] text-white font-black" title="Esci">ESC</button>
               </div>
             </div>
 
             {/* Info Row: Scoreboards (Narrower width to accommodate Briscola) */}
-            <div className="flex flex-col gap-1 w-[58%] z-10 mt-3">
-              <div className="w-full h-12"><ScoreBoard players={matchState.players} type="match" myIndex={myOnlineIndex} /></div>
-              {gameMode === 'ONLINE' && <div className="text-center text-blue-300 text-[8px] uppercase font-bold">Room: {roomCode}</div>}
-              <div className="w-full h-12"><ScoreBoard players={matchState.players} type="total" myIndex={myOnlineIndex} /></div>
+            <div className="flex flex-col gap-1 w-[60%] z-10 mt-1 min-h-0 flex-shrink">
+              <div className="w-full flex-shrink min-h-0 overflow-hidden"><ScoreBoard players={matchState.players} type="match" myIndex={myOnlineIndex} /></div>
+              {gameMode === 'ONLINE' && <div className="text-center text-blue-300 text-[8px] uppercase font-bold leading-none">Room: {roomCode}</div>}
+              <div className="w-full flex-shrink min-h-0 overflow-hidden"><ScoreBoard players={matchState.players} type="total" myIndex={myOnlineIndex} /></div>
             </div>
           </header>
-          <div className="py-1.5 px-3 flex justify-between items-center w-full gap-2 relative z-20">
+          <div className="py-1 px-3 flex justify-between items-center w-full gap-2 relative z-20 flex-shrink-0">
             <IAIndicator player={matchState.players[(myOnlineIndex + 1) % 3]} isTurn={matchState.turnIndex === (myOnlineIndex + 1) % 3} isWinner={matchState.waitingForNextTrick && matchState.tempWinnerId === (myOnlineIndex + 1) % 3} />
-            <div className="flex-1 flex justify-center"><StatusPanel game={matchState} message={message} /></div>
+            <div className="flex-1 flex justify-center scale-90 sm:scale-100"><StatusPanel game={matchState} message={message} /></div>
             <IAIndicator player={matchState.players[(myOnlineIndex + 2) % 3]} isTurn={matchState.turnIndex === (myOnlineIndex + 2) % 3} isWinner={matchState.waitingForNextTrick && matchState.tempWinnerId === (myOnlineIndex + 2) % 3} />
           </div>
 

@@ -4,10 +4,9 @@ Questo documento riassume le principali funzioni e le modifiche architettoniche 
 
 ## 1. Architettura Mobile & Layout
 - **File**: `index.html`, `src/App.tsx`
-- **Dynamic Viewport Height (--vh)**: Implementato un fix Javascript in `index.html` che calcola `window.innerHeight` e lo assegna alla variabile CSS `--vh`. Questo evita i "salti" del layout su Chrome/Safari mobile quando compaiono le barre di navigazione.
-- **App-Like Units**: Il contenitore principale usa `height: calc(var(--vh, 1vh) * 100)` per garantire la copertura perfetta dello schermo.
-- **Adaptive Layout**: Ridotte le altezze di `StatusPanel` e `IAIndicator` per massimizzare lo spazio verticale. Rimosso `overflow-hidden` dal contenitore del tavolo per permettere alle carte di sovrapporsi elegantemente alla barra di stato (effetto glassmorphism).
-- **Overflow Control**: Impostato `overflow: hidden` sul body per eliminare lo scroll elastico, forzando un'esperienza simile a un'app nativa.
+- **Universal Scaling (vh/vmin)**: Il layout non si basa più solo sulla larghezza (`vw`), ma su unità relative all'altezza (`vh`) e alla dimensione minima del viewport (`vmin`). Questo garantisce che su schermi bassi il gioco si comprima proporzionalmente.
+- **Flex-Shrink Architecture**: Tutti i componenti (Header, ScoreBoards, Tavolo) hanno il permesso di rimpicciolirsi (`min-h-0`, `flex-shrink`) per lasciare spazio alla mano del giocatore.
+- **Scroll Fallback**: Aggiunto `overflow-y-auto` sul contenitore principale per garantire che nulla sia mai "tagliato" fuori dallo schermo su dispositivi piccolissimi.
 
 ## 2. Sistema di Feedback (Audio & Vibrazione)
 - **File**: `src/utils/audio.ts`, `src/App.tsx`
@@ -20,8 +19,8 @@ Questo documento riassume le principali funzioni e le modifiche architettoniche 
 
 ## 3. UI Dinamica & Card Scaling
 - **File**: `src/components/GameTable.tsx`
-- **Scaling Proporzionale**: Le carte nella mano usano `width: clamp(70px, 28vw, 110px)`. Le carte sul tavolo usano `width: clamp(85px, 28vw, 110px)`. Questo permette agli elementi di rimpicciolirsi automaticamente su schermi stretti per prevenire sovrapposizioni, mantenendo la massima visibilità possibile.
-- **Z-Index & Clipping Fix**: Rimosso `overflow-hidden` dall'area della mano e aggiunto `hover:z-50` alle carte per garantire che, quando vengono selzionate/zoomate, appaiano sopra il tavolo e non vengano tagliate.
+- **Responsive Card Sizes**: Le carte usano ora `vmin` (es. `clamp(65px, 24vmin, 105px)`). Se lo schermo è basso (es. iPhone SE), le carte si rimpiccioliscono automaticamente per non uscire dal bordo inferiore.
+- **Z-Index & Clipping Fix**: Rimosso l'overflow forzato e aggiunto `hover:z-50` alle carte in mano per garantire che lo zoom avvenga sempre sopra ogni altro elemento.
 - **Deck Relocation**: Spostato il contatore del mazzo dal centro del tavolo alla parte alta-centrale per liberare l'area di gioco principale e migliorare la leggibilità.
 - **UI Tweaks**: Alzato il pulsante "RACCOGLI" di 15px per non sovrapporsi alle carte giocate e spostata la corona della vittoria a fianco dei nomi dei giocatori.
 - **Safe Area Support**: Utilizzato `pb-[env(safe-area-inset-bottom)]` nella Hand Area per evitare che gli indicatori di sistema (barra home di iOS/Android) coprano le carte.

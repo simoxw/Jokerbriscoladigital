@@ -76,7 +76,7 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
       <div className="flex flex-col items-center justify-end gap-1 relative h-full">
 
         <div className={`w-full aspect-[2/3] border rounded-lg bg-black/40 flex items-center justify-center shadow-2xl transition-all duration-500 relative ${getCardContainerStyle(playerId)}`}
-          style={{ width: 'clamp(85px, 28vw, 110px)' }}>
+          style={{ width: 'clamp(70px, 25vmin, 100px)' }}>
           {card ? (
             <div className="w-full h-full p-0.5" style={{ transform: `rotate(${(card.id * 13) % 10 - 5}deg)` }}>
               <ItalianCard card={card} isFluid />
@@ -101,23 +101,21 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
   return (
     <div className="w-full flex flex-col flex-1 relative overflow-hidden">
 
-      {/* 1. TABLE AREA */}
-      <div className="relative flex-1 flex flex-col items-center justify-center p-2 min-h-[200px]">
+      {/* 1. TABLE AREA - Fills available space, can shrink if needed */}
+      <div className="relative flex-1 flex flex-col items-center justify-center p-2 min-h-0 flex-shrink overflow-visible">
 
         {/* Lead Suit Indicator */}
-        {leadSuit && !waitingForNextTrick && (
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-white/5 px-3 py-1 rounded-full border border-white/10 flex items-center gap-2 animate-fade-in z-0">
-            <span className="text-[8px] uppercase font-bold text-white/40 tracking-widest">Mano:</span>
-            <span className="text-xs">{getSuitIcon(leadSuit)}</span>
-          </div>
-        )}
+        <div className="absolute top-1 left-1/2 -translate-x-1/2 bg-white/5 px-2 py-0.5 rounded-full border border-white/10 flex items-center gap-1.5 animate-fade-in z-0">
+          <span className="text-[7px] uppercase font-bold text-white/40 tracking-widest">Mano:</span>
+          <span className="text-[10px]">{getSuitIcon(leadSuit)}</span>
+        </div>
 
-        {/* Central Play Area - Increased max-width for larger cards */}
-        <div className="w-full max-w-[320px] sm:max-w-[380px] aspect-square rounded-[40px] relative flex items-center justify-center">
+        {/* Central Play Area - Using relative max-width to ensure it fits any screen */}
+        <div className="w-full max-w-[85vmin] aspect-square rounded-[40px] relative flex items-center justify-center flex-shrink min-h-0">
 
-          {/* Deck Counter - Corrected position: Top-Center (Red square spot) - Lowered by 10px total from original top-4 */}
-          <div className="absolute top-[30px] left-1/2 -translate-x-1/2 text-center pointer-events-none z-10">
-            <div className="flex flex-col items-center gap-1 bg-black/40 px-2.5 py-1 rounded-xl border border-white/10 backdrop-blur-md shadow-xl">
+          {/* Deck Counter - Relocated and scaled */}
+          <div className="absolute top-3 left-1/2 -translate-x-1/2 text-center pointer-events-none z-10 scale-90 origin-top">
+            <div className="flex flex-col items-center gap-1 bg-black/45 px-2 py-0.5 rounded-xl border border-white/10 backdrop-blur-md shadow-xl">
               {/* Compact Card Stack Icon */}
               <div className="relative w-4 h-6 mb-0.5">
                 <div className="absolute inset-0 bg-amber-800/40 border border-amber-600/30 rounded-sm translate-x-[1px] translate-y-[1px]"></div>
@@ -141,7 +139,7 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
             </div>
 
             {/* Row 2: Me (Center Bottom) */}
-            <div className="col-start-2 row-start-2 flex items-end justify-center -mb-3">
+            <div className="col-start-2 row-start-2 flex items-end justify-center -mb-2">
               {renderSlot(myIndex, 'TU', 'TU')}
             </div>
           </div>
@@ -156,9 +154,9 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
         </div>
       </div>
 
-      {/* 2. HAND AREA */}
-      <div className={`bg-[#02120a] pb-[env(safe-area-inset-bottom,16px)] pt-2 px-2 border-t border-white/10 transition-opacity duration-300 relative z-30 ${waitingForNextTrick ? 'opacity-40 grayscale pointer-events-none' : 'opacity-100'}`}>
-        <div className="flex justify-center gap-2 items-end max-w-full">
+      {/* 2. HAND AREA - Fixed bottom, dynamic card sizes */}
+      <div className={`bg-[#02120a] pb-[max(env(safe-area-inset-bottom),8px)] pt-1.5 px-1.5 border-t border-white/10 transition-opacity duration-300 relative z-30 flex-shrink-0 ${waitingForNextTrick ? 'opacity-40 grayscale pointer-events-none' : 'opacity-100'}`}>
+        <div className="flex justify-center gap-1 items-end max-w-full min-h-0">
           {me.hand.map((card, idx) => {
             const isNewCard = card.id > (game.roundCount * 10);
             return (
@@ -166,9 +164,10 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
                 key={card.id}
                 className={`transform transition-all duration-300 ${turnIndex === myIndex ? 'hover:-translate-y-6 hover:scale-110 hover:z-50 cursor-pointer active:scale-95 animate-turn-glow rounded-xl' : 'opacity-80'} ${isNewCard ? 'animate-card-draw' : ''}`}
                 style={{
-                  width: 'clamp(70px, 28vw, 110px)',
+                  width: 'clamp(65px, 24vmin, 105px)',
                   aspectRatio: '2/3',
-                  animationDelay: isNewCard ? `${idx * 0.1}s` : undefined
+                  animationDelay: isNewCard ? `${idx * 0.1}s` : undefined,
+                  flexShrink: 1
                 }}
               >
                 <ItalianCard
