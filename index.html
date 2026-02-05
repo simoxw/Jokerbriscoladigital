@@ -1,23 +1,74 @@
 <!DOCTYPE html>
 <html lang="it">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#1e453e">
-    <link rel="manifest" href="./manifest.json">
-    <title>Joker Briscola - Digital Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { font-family: 'Inter', sans-serif; margin: 0; background: #0f172a; }
-        .font-cinzel { font-family: 'Cinzel', serif; }
-    </style>
-    <script type="module" crossorigin src="/Jokerbriscoladigital/assets/index-CpujLSD6.js"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1e453e">
+  <link rel="manifest" href="./manifest.json">
+  <title>Joker Briscola - Digital Edition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background: #0f172a;
+      overscroll-behavior: none;
+    }
+
+    .font-cinzel {
+      font-family: 'Cinzel', serif;
+    }
+
+    @keyframes card-pop {
+      0% {
+        transform: scale(1.2) translateY(20px);
+        opacity: 0;
+      }
+
+      100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes turn-glow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 5px rgba(251, 191, 36, 0.2);
+        filter: brightness(1);
+      }
+
+      50% {
+        box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+        filter: brightness(1.1);
+      }
+    }
+
+    .animate-card-pop {
+      animation: card-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    .animate-turn-glow {
+      animation: turn-glow 2s ease-in-out infinite;
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+  <script type="module" crossorigin src="/Jokerbriscoladigital/assets/index-BUZ1Rxkh.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+
 </html>

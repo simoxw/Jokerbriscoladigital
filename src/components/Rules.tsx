@@ -19,9 +19,11 @@ const Rules: React.FC<RulesProps> = ({ setView }) => {
                     <p className="text-sm leading-relaxed text-slate-300">
                         Il gioco si svolge in 3 giocatori. È una sfida tutti contro tutti con ruoli nascosti.
                         <br /><br />
-                        <strong className="text-white">JOKER:</strong> Gioca da solo. Vince se totalizza almeno <strong className="text-amber-400">51 punti</strong>.
+                        <strong className="text-white">JOKER:</strong> Gioca da solo. Vince se totalizza almeno <strong className="text-amber-400">51 punti</strong>. (+2)
                         <br />
-                        <strong className="text-white">ALLEATI:</strong> Giocano in coppia. Vincono se totalizzano insieme almeno <strong className="text-blue-400">71 punti</strong>.
+                        <strong className="text-white">ALLEATI:</strong> Giocano in coppia. Vincono se totalizzano insieme almeno <strong className="text-blue-400">71 punti</strong>. (+1)
+                        <br />
+                        Lo scopo finale è essere il primo giocatore a raggiungere 10 o più punti.
                     </p>
                 </section>
 

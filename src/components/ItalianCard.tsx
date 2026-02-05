@@ -54,8 +54,8 @@ const ItalianCard: React.FC<ItalianCardProps> = ({ card, onClick, isHidden, isSm
         ${sizeClasses}
         relative bg-[#f8fafc] text-slate-900 rounded-xl border-[3px] border-amber-900/40 
         flex flex-col items-center shadow-2xl cursor-pointer overflow-hidden
-        transition-all duration-300
-        ${disabled ? 'opacity-40 grayscale pointer-events-none' : 'hover:scale-110 hover:border-amber-500 hover:shadow-amber-500/20'}
+        transition-all duration-200
+        ${disabled ? 'opacity-40 grayscale pointer-events-none' : 'hover:scale-105 active:scale-95 hover:border-amber-500 hover:shadow-amber-500/30'}
       `}
     >
       {!imgError ? (

@@ -57,7 +57,10 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
     }
     if (isJoker && hasCard) {
       // Usiamo una tonalità Viola/Fucsia per il Joker per distinguerlo dall'Oro del vincitore
-      return 'border-fuchsia-500 shadow-[0_0_25px_rgba(192,38,211,0.6)] ring-1 ring-fuchsia-400 z-10';
+      return 'border-fuchsia-500 shadow-[0_0_25px_rgba(192,38,211,0.6)] ring-1 ring-fuchsia-400 z-10 animate-card-pop';
+    }
+    if (hasCard) {
+      return 'border-white/5 animate-card-pop';
     }
     return 'border-white/5';
   };
@@ -75,7 +78,7 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
 
         <div className={`w-full aspect-[2/3] border rounded-lg bg-black/40 flex items-center justify-center shadow-2xl transition-all duration-500 relative ${getCardContainerStyle(playerId)}`}>
           {card ? (
-            <div className="w-full h-full p-0.5">
+            <div className="w-full h-full p-0.5" style={{ transform: `rotate(${(card.id * 13) % 10 - 5}deg)` }}>
               <ItalianCard card={card} isFluid />
             </div>
           ) : (
@@ -145,7 +148,7 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
       <div className={`bg-[#02120a] pb-4 pt-2 px-2 border-t border-white/10 mt-4 transition-opacity duration-300 relative z-30 ${waitingForNextTrick ? 'opacity-40 grayscale pointer-events-none' : 'opacity-100'}`}>
         <div className="flex justify-center gap-2 h-32 items-end">
           {me.hand.map((card) => (
-            <div key={card.id} className={`transform transition-all duration-300 w-24 h-40 ${turnIndex === myIndex ? 'hover:-translate-y-4 cursor-pointer active:scale-95' : 'opacity-80'}`}>
+            <div key={card.id} className={`transform transition-all duration-300 w-24 h-40 ${turnIndex === myIndex ? 'hover:-translate-y-4 cursor-pointer active:scale-95 animate-turn-glow rounded-xl' : 'opacity-80'}`}>
               <ItalianCard
                 card={card}
                 isFluid
