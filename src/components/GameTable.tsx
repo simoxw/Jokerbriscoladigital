@@ -76,7 +76,7 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
       <div className="flex flex-col items-center justify-end gap-1 relative h-full">
 
         <div className={`w-full aspect-[2/3] border rounded-lg bg-black/40 flex items-center justify-center shadow-2xl transition-all duration-500 relative ${getCardContainerStyle(playerId)}`}
-          style={{ width: 'clamp(70px, 25vmin, 100px)' }}>
+          style={{ width: 'clamp(75px, 28vmin, 110px)' }}>
           {card ? (
             <div className="w-full h-full p-0.5" style={{ transform: `rotate(${(card.id * 13) % 10 - 5}deg)` }}>
               <ItalianCard card={card} isFluid />
@@ -110,11 +110,11 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
           <span className="text-[10px]">{getSuitIcon(leadSuit)}</span>
         </div>
 
-        {/* Central Play Area - Using relative max-width to ensure it fits any screen */}
+        {/* Central Play Area - Using relative max-w to ensure it fits any screen */}
         <div className="w-full max-w-[85vmin] aspect-square rounded-[40px] relative flex items-center justify-center flex-shrink min-h-0">
 
-          {/* Deck Counter - Relocated and scaled */}
-          <div className="absolute top-3 left-1/2 -translate-x-1/2 text-center pointer-events-none z-10 scale-90 origin-top">
+          {/* Deck Counter - Relocated and scaled - Lowered further for balance */}
+          <div className="absolute top-[8vh] left-1/2 -translate-x-1/2 text-center pointer-events-none z-10 scale-90 origin-top">
             <div className="flex flex-col items-center gap-1 bg-black/45 px-2 py-0.5 rounded-xl border border-white/10 backdrop-blur-md shadow-xl">
               {/* Compact Card Stack Icon */}
               <div className="relative w-4 h-6 mb-0.5">
@@ -128,41 +128,51 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
             </div>
           </div>
 
-          {/* Player Slots positioned around */}
-          <div className="absolute w-full h-full p-3 grid grid-cols-3 grid-rows-2 z-10">
-            {/* Row 1: Left (Next) & Right (Prev) - Shifted down to avoid status bar overlap */}
-            <div className="col-start-1 row-start-1 flex items-center justify-center pr-2 pt-44">
+          {/* Player Slots positioned around - Elevated z-index to be above status row if they overlap */}
+          <div className="absolute w-full h-full p-3 grid grid-cols-3 grid-rows-2 z-40 pointer-events-none">
+            {/* Row 1: Left (Next) & Right (Prev) - Shifted outwards and DOWNWARDS to clear filters */}
+            <div className="col-start-1 row-start-1 flex items-center justify-center -translate-x-4 pt-[12vh]">
               {renderSlot(leftIndex, leftPlayer.name, 'SX')}
             </div>
-            <div className="col-start-3 row-start-1 flex items-center justify-center pl-2 pt-44">
+            <div className="col-start-3 row-start-1 flex items-center justify-center translate-x-4 pt-[12vh]">
               {renderSlot(rightIndex, rightPlayer.name, 'DX')}
             </div>
 
-            {/* Row 2: Me (Center Bottom) */}
-            <div className="col-start-2 row-start-2 flex items-end justify-center -mb-2">
+            {/* Row 2: Me (Center Bottom) - Positioned relative to allow side turn indicator */}
+            <div className="col-start-2 row-start-2 flex items-end justify-center -mb-2 relative">
               {renderSlot(myIndex, 'TU', 'TU')}
+
+              {/* Turn Indicator - Relocated BESIDE me to save vertical space */}
+              <div className="absolute left-[calc(100%+8px)] bottom-8 z-20 pointer-events-none whitespace-nowrap origin-left">
+                <div className="text-[10px] font-bold text-white/30 uppercase tracking-[2px] flex items-center gap-2 bg-black/50 px-3 py-1.5 rounded-2xl backdrop-blur-md border border-white/10 shadow-2xl">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                  <div className="flex flex-col items-start leading-none">
+                    <span className="text-[7px] text-white/40 mb-0.5">Tocca a</span>
+                    <span className={`text-[10px] ${turnIndex === myIndex ? 'text-amber-400 font-black' : 'text-slate-200 font-bold'}`}>
+                      {turnIndex === myIndex ? 'TE' : players.find(p => p.id === turnIndex)?.name}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Turn Indicator */}
-        <div className="h-8 w-full flex items-center justify-center mt-2 z-20">
-          <div className="text-[10px] font-bold text-white/30 uppercase tracking-[3px] flex items-center justify-center gap-2 bg-black/40 px-4 py-1 rounded-full backdrop-blur-sm border border-white/5">
-            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-            Tocca a <span className={`${turnIndex === myIndex ? 'text-amber-400 font-extrabold' : 'text-slate-300'}`}>{turnIndex === myIndex ? 'TE' : players.find(p => p.id === turnIndex)?.name}</span>
-          </div>
-        </div>
+        {/* Turn Indicator - MOVED ABOVE to the side of TU slot */}
       </div>
 
-      {/* 2. HAND AREA - Fixed bottom, dynamic card sizes */}
-      <div className={`bg-[#02120a] pb-[max(env(safe-area-inset-bottom),8px)] pt-1.5 px-1.5 border-t border-white/10 transition-opacity duration-300 relative z-30 flex-shrink-0 ${waitingForNextTrick ? 'opacity-40 grayscale pointer-events-none' : 'opacity-100'}`}>
+      {/* 2. HAND AREA - Fixed bottom, dynamic card sizes - Top z-index */}
+      <div className={`bg-[#02120a] pb-[max(env(safe-area-inset-bottom),8px)] pt-1.5 px-1.5 border-t border-white/10 transition-opacity duration-300 relative z-50 flex-shrink-0 ${waitingForNextTrick ? 'opacity-40 grayscale pointer-events-none' : 'opacity-100'}`}>
         <div className="flex justify-center gap-1 items-end max-w-full min-h-0">
           {me.hand.map((card, idx) => {
             const isNewCard = card.id > (game.roundCount * 10);
             return (
               <div
                 key={card.id}
-                className={`transform transition-all duration-300 ${turnIndex === myIndex ? 'hover:-translate-y-6 hover:scale-110 hover:z-50 cursor-pointer active:scale-95 animate-turn-glow rounded-xl' : 'opacity-80'} ${isNewCard ? 'animate-card-draw' : ''}`}
+                className={`transform transition-all duration-500 ${turnIndex === myIndex
+                  ? 'cursor-pointer active:scale-95 animate-turn-glow rounded-xl [@media(hover:hover)]:hover:-translate-y-8 [@media(hover:hover)]:hover:scale-110 [@media(hover:hover)]:hover:z-50'
+                  : 'opacity-80'
+                  } ${isNewCard ? 'animate-card-draw' : ''}`}
                 style={{
                   width: 'clamp(65px, 24vmin, 105px)',
                   aspectRatio: '2/3',

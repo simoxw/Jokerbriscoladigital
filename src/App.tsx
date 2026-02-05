@@ -637,12 +637,12 @@ const App: React.FC = () => {
 
       {view === 'game' && matchState && (
         <div className="relative w-full h-full flex flex-col max-w-[420px] bg-transparent min-h-0 flex-shrink">
-          <header className="p-2 bg-black/40 backdrop-blur-md z-30 flex flex-col gap-1 shadow-2xl border-b border-white/10 relative">
+          <header className="p-1.5 bg-black/40 backdrop-blur-md z-30 flex flex-col gap-0.5 shadow-2xl border-b border-white/10 relative flex-shrink-0">
 
-            {/* Briscola: Positioned Absolute Top-Right, Larger */}
-            <div className="absolute top-1.5 right-1.5 flex flex-col items-center bg-black/30 p-1 rounded-lg border border-white/10 shadow-xl z-20">
-              <span className="text-[7.5px] text-amber-500 font-bold uppercase tracking-widest mb-0.5 leading-none">Briscola</span>
-              <div className="w-[18vw] max-w-[80px] aspect-[2/3]">
+            {/* Briscola: Positioned Absolute Top-Right, Restored to larger size as per user request */}
+            <div className="absolute top-1 right-1 flex flex-col items-center bg-black/40 p-1.5 rounded-xl border border-white/10 shadow-2xl z-20">
+              <span className="text-[8px] text-amber-500 font-bold uppercase tracking-widest mb-1 leading-none">Briscola</span>
+              <div className="w-[22vw] max-w-[100px] aspect-[2/3] shadow-inner">
                 {matchState.briscola ? (
                   <ItalianCard card={matchState.briscola} isFluid />
                 ) : (
@@ -676,7 +676,7 @@ const App: React.FC = () => {
               <div className="w-full flex-shrink min-h-0 overflow-hidden"><ScoreBoard players={matchState.players} type="total" myIndex={myOnlineIndex} /></div>
             </div>
           </header>
-          <div className="py-1 px-3 flex justify-between items-center w-full gap-2 relative z-20 flex-shrink-0">
+          <div className="py-1 px-3 flex justify-between items-center w-full gap-2 relative z-10 flex-shrink-0">
             <IAIndicator player={matchState.players[(myOnlineIndex + 1) % 3]} isTurn={matchState.turnIndex === (myOnlineIndex + 1) % 3} isWinner={matchState.waitingForNextTrick && matchState.tempWinnerId === (myOnlineIndex + 1) % 3} />
             <div className="flex-1 flex justify-center scale-90 sm:scale-100"><StatusPanel game={matchState} message={message} /></div>
             <IAIndicator player={matchState.players[(myOnlineIndex + 2) % 3]} isTurn={matchState.turnIndex === (myOnlineIndex + 2) % 3} isWinner={matchState.waitingForNextTrick && matchState.tempWinnerId === (myOnlineIndex + 2) % 3} />

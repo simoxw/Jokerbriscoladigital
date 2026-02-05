@@ -18,9 +18,8 @@ Questo documento riassume le principali funzioni e le modifiche architettoniche 
 - **Persistenza**: Gli stati `isMuted` e `isVibrationEnabled` sono salvati in `localStorage` (`joker_is_muted`, `joker_is_vibration_enabled`).
 
 ## 3. UI Dinamica & Card Scaling
-- **File**: `src/components/GameTable.tsx`
-- **Responsive Card Sizes**: Le carte usano ora `vmin` (es. `clamp(65px, 24vmin, 105px)`). Se lo schermo è basso (es. iPhone SE), le carte si rimpiccioliscono automaticamente per non uscire dal bordo inferiore.
-- **Z-Index & Clipping Fix**: Rimosso l'overflow forzato e aggiunto `hover:z-50` alle carte in mano per garantire che lo zoom avvenga sempre sopra ogni altro elemento.
+- **Responsive Card Sizes**: Le carte usano ora `vmin` con uno scaling generoso (es. `clamp(80px, 30vmin, 120px)` per il tavolo). Se lo schermo è basso, le carte si rimpiccioliscono automaticamente mantenendo la massima visibilità possibile.
+- **Smart Hover Experience**: Implementata media query `@media (hover: hover)` per le carte in mano. Questo previene l'effetto "carta sollevata fissa" su mobile (sticky hover), riservando l'animazione di sollevamento ai soli utenti con mouse/PC.
 - **Deck Relocation**: Spostato il contatore del mazzo dal centro del tavolo alla parte alta-centrale per liberare l'area di gioco principale e migliorare la leggibilità.
 - **UI Tweaks**: Alzato il pulsante "RACCOGLI" di 15px per non sovrapporsi alle carte giocate e spostata la corona della vittoria a fianco dei nomi dei giocatori.
 - **Safe Area Support**: Utilizzato `pb-[env(safe-area-inset-bottom)]` nella Hand Area per evitare che gli indicatori di sistema (barra home di iOS/Android) coprano le carte.
