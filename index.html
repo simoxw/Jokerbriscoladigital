@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover" />
+    content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#1e453e">
@@ -52,6 +52,18 @@
       }
     }
 
+    @keyframes card-draw {
+      0% {
+        transform: translate(-50%, -150%) scale(0.5);
+        opacity: 0;
+      }
+
+      100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+    }
+
     .animate-card-pop {
       animation: card-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
@@ -60,11 +72,15 @@
       animation: turn-glow 2s ease-in-out infinite;
     }
 
+    .animate-card-draw {
+      animation: card-draw 0.5s ease-out forwards;
+    }
+
     * {
       -webkit-tap-highlight-color: transparent;
     }
   </style>
-  <script type="module" crossorigin src="/Jokerbriscoladigital/assets/index-BUZ1Rxkh.js"></script>
+  <script type="module" crossorigin src="/Jokerbriscoladigital/assets/index-ByOzpNGo.js"></script>
 </head>
 
 <body>

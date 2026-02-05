@@ -89,15 +89,6 @@ const App: React.FC = () => {
     localStorage.setItem('joker_is_muted', isMuted.toString());
   }, [isMuted]);
 
-  const [isVibrationEnabled, setIsVibrationEnabled] = useState(() => {
-    return localStorage.getItem('joker_is_vibration_enabled') !== 'false'; // Default a true
-  });
-
-  useEffect(() => {
-    audioManager.setVibrationEnabled(isVibrationEnabled);
-    localStorage.setItem('joker_is_vibration_enabled', isVibrationEnabled.toString());
-  }, [isVibrationEnabled]);
-
   // Player name persistence
   const [playerName, setPlayerName] = useState(() => {
     return localStorage.getItem('joker_player_name') || "";
@@ -184,7 +175,6 @@ const App: React.FC = () => {
       });
 
       audioManager.play('CARD_PLAY');
-      audioManager.vibrate(10);
     });
 
     // NEW: Handle full state sync from AI move
@@ -195,7 +185,6 @@ const App: React.FC = () => {
       if (player) {
         setMessage(`${player.name} ha giocato ${card.label}`);
         audioManager.play('CARD_PLAY');
-        audioManager.vibrate(10);
       }
     });
 
@@ -519,19 +508,11 @@ const App: React.FC = () => {
 
     if (gameMode === 'ONLINE') socket.emit('play_card', { code: roomCode, card, playerId: myOnlineIndex });
 
-    // Suono carta giocata localmente e vibrazione
+    // Suono carta giocata localmente
     audioManager.play('CARD_PLAY');
-    audioManager.vibrate(15);
   }, [matchState, gameMode, myOnlineIndex, roomCode]);
 
-  // VIBRAZIONE TURNO: Trigger quando diventa il mio turno
-  useEffect(() => {
-    if (matchState?.phase === 'PLAYING' && !matchState.waitingForNextTrick) {
-      if (matchState.turnIndex === myOnlineIndex) {
-        audioManager.vibrate(25);
-      }
-    }
-  }, [matchState?.turnIndex, matchState?.phase, matchState?.waitingForNextTrick, myOnlineIndex]);
+  // VIBRAZIONE TURNO: Trigger quando diventa il mio turno (Removed)
 
   // AI TURN LOGIC (Offline & Online Host)
   useEffect(() => {
@@ -578,9 +559,8 @@ const App: React.FC = () => {
           });
         }
 
-        // Suono carta IA e vibrazione
+        // Suono carta IA
         audioManager.play('CARD_PLAY');
-        audioManager.vibrate(10);
       }, 800);
       return () => clearTimeout(timer);
     }
@@ -659,9 +639,6 @@ const App: React.FC = () => {
               <div className="flex gap-2">
                 <button onClick={() => setIsMuted(prev => !prev)} className={`w-9 h-9 ${isMuted ? 'bg-slate-600' : 'bg-green-600'} rounded-xl flex items-center justify-center shadow-lg border ${isMuted ? 'border-slate-400' : 'border-green-400'} text-white transition-colors`} title={isMuted ? "Attiva Audio" : "Muta"}>
                   {isMuted ? '🔇' : '🔊'}
-                </button>
-                <button onClick={() => setIsVibrationEnabled(prev => !prev)} className={`w-9 h-9 ${!isVibrationEnabled ? 'bg-slate-600' : 'bg-fuchsia-600'} rounded-xl flex items-center justify-center shadow-lg border ${!isVibrationEnabled ? 'border-slate-400' : 'border-fuchsia-400'} text-white transition-colors`} title={isVibrationEnabled ? "Disattiva Vibrazione" : "Attiva Vibrazione"}>
-                  {isVibrationEnabled ? '📳' : '📴'}
                 </button>
                 <button onClick={() => setShowHistory(true)} className="w-9 h-9 bg-amber-600 hover:bg-amber-500 rounded-xl flex items-center justify-center shadow-lg border border-amber-400 text-white" title="Cronologia">📊</button>
                 <button onClick={() => setShowDifficulty(true)} className="w-9 h-9 bg-amber-600 hover:bg-amber-500 rounded-xl flex items-center justify-center shadow-lg border border-amber-400 text-white" title="IA">⚙️</button>

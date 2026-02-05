@@ -147,16 +147,23 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
       {/* 2. HAND AREA */}
       <div className={`bg-[#02120a] pb-4 pt-2 px-2 border-t border-white/10 mt-4 transition-opacity duration-300 relative z-30 ${waitingForNextTrick ? 'opacity-40 grayscale pointer-events-none' : 'opacity-100'}`}>
         <div className="flex justify-center gap-2 h-32 items-end">
-          {me.hand.map((card) => (
-            <div key={card.id} className={`transform transition-all duration-300 w-24 h-40 ${turnIndex === myIndex ? 'hover:-translate-y-4 cursor-pointer active:scale-95 animate-turn-glow rounded-xl' : 'opacity-80'}`}>
-              <ItalianCard
-                card={card}
-                isFluid
-                onClick={() => onCardClick(card)}
-                disabled={turnIndex !== myIndex || game.phase !== 'PLAYING' || game.playedCards.length === 3 || waitingForNextTrick}
-              />
-            </div>
-          ))}
+          {me.hand.map((card, idx) => {
+            const isNewCard = card.id > (game.roundCount * 10); // Heuristic to detect new cards
+            return (
+              <div
+                key={card.id}
+                className={`transform transition-all duration-300 w-24 h-40 ${turnIndex === myIndex ? 'hover:-translate-y-4 cursor-pointer active:scale-95 animate-turn-glow rounded-xl' : 'opacity-80'} ${isNewCard ? 'animate-card-draw' : ''}`}
+                style={isNewCard ? { animationDelay: `${idx * 0.1}s` } : {}}
+              >
+                <ItalianCard
+                  card={card}
+                  isFluid
+                  onClick={() => onCardClick(card)}
+                  disabled={turnIndex !== myIndex || game.phase !== 'PLAYING' || game.playedCards.length === 3 || waitingForNextTrick}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

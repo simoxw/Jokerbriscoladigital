@@ -10,7 +10,6 @@ const SOUNDS = {
 class AudioManager {
     private static instance: AudioManager;
     private muted: boolean = false;
-    private vibrationEnabled: boolean = true;
     private audioCache: Map<string, HTMLAudioElement> = new Map();
 
     private constructor() {
@@ -26,19 +25,6 @@ class AudioManager {
 
     setMuted(muted: boolean) {
         this.muted = muted;
-    }
-
-    setVibrationEnabled(enabled: boolean) {
-        this.vibrationEnabled = enabled;
-    }
-
-    vibrate(pattern: number | number[] = 10) {
-        if (!this.vibrationEnabled || !navigator.vibrate) return;
-        try {
-            navigator.vibrate(pattern);
-        } catch (e) {
-            console.warn("Vibration blocked or not supported:", e);
-        }
     }
 
     play(soundKey: keyof typeof SOUNDS) {
