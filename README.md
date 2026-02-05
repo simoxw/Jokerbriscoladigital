@@ -17,15 +17,16 @@ il suo seme determina la briscola della partita singola.
 4. Le restanti carte formano il mazzo di pesca, coperto.
 
 Variante Joker – Assegnazione del ruolo
+
 Durante la partita singola si applica la seguente regola speciale:
-• Il primo giocatore che gioca una carta di briscola diventa il Joker.
-• Questo avviene nel momento in cui la briscola viene giocata, anche se il giocatore non vince la
+1. Il primo giocatore che gioca una carta di briscola diventa il Joker.
+2.  Questo avviene nel momento in cui la briscola viene giocata, anche se il giocatore non vince la
 presa.
-• Da quell’istante:
-o gli altri due giocatori diventano alleati contro il Joker;
-o il ruolo di Joker rimane fisso fino alla fine della partita singola;
-o altri giocatori che giochino briscole successivamente non possono diventare Joker.
-Il ruolo di Joker viene azzerato alla fine di ogni partita singola. Nella partita successiva, il Joker verrà
+3. Da quell’istante:
+   - gli altri due giocatori diventano alleati contro il Joker;
+   - il ruolo di Joker rimane fisso fino alla fine della partita singola;
+   -  altri giocatori che giochino briscole successivamente non possono diventare Joker.
+4. Il ruolo di Joker viene azzerato alla fine di ogni partita singola. Nella partita successiva, il Joker verrà
 nuovamente determinato secondo la stessa regola.
 
 Fine della partita singola e calcolo dei punti
@@ -33,21 +34,16 @@ Alla fine di una partita singola:
 1. Ogni giocatore somma i punti delle carte raccolte nelle proprie prese.
 2. Si ottengono tre punteggi individuali, la cui somma è sempre 120.
 3. Si applicano le condizioni di vittoria della partita singola:
-• Vittoria del Joker:
-o il Joker vince la partita singola se totalizza almeno 51 punti.
-• Vittoria degli alleati:
-o i due alleati vincono la partita singola se la somma dei loro punti è almeno 71.
-• Partita singola nulla:
-o se il Joker non raggiunge 51 puntio e gli alleati non raggiungono insieme 71 punti, allora la partita singola è nulla e non assegna
-punti a lungo termine.
+- Vittoria del Joker: il Joker vince la partita singola se totalizza almeno 51 punti.
+- Vittoria degli alleati: i due alleati vincono la partita singola se la somma dei loro punti è almeno 71.
+- Partita singola nulla: se il Joker non raggiunge 51 puntio e gli alleati non raggiungono insieme 71 punti, allora la partita singola è nulla e non assegna punti.
 
 Punteggio a lungo termine (partita generale)
 In base al risultato di ogni partita singola:
-• Se vince il Joker: il Joker guadagna 2 punti.
-• Se vincono gli alleati: ciascuno dei due alleati guadagna 1 punto.
-• Se la partita singola è nulla: nessuno guadagna punti.
-La partita generale continua disputando nuove partite singole finché:
-• il primo giocatore che raggiunge almeno 10 punti viene dichiarato vincitore della partita generale.
+- Se vince il Joker: il Joker guadagna 2 punti.
+- Se vincono gli alleati: ciascuno dei due alleati guadagna 1 punto.
+- Se la partita singola è nulla: nessuno guadagna punti.
+- La partita generale continua disputando nuove partite singole finché: il primo giocatore che raggiunge almeno 10 punti viene dichiarato vincitore della partita generale.
 
 ## 🚀 Caratteristiche
 - **Punteggi Sincronizzati**: Sincronizzazione in tempo reale dei punti mano e torneo tra tutti i client (Host e Guest).
