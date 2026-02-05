@@ -42,7 +42,7 @@ export interface MatchState {
   playedCards: { playerId: number; card: Card }[];
   turnIndex: number;
   jokerPlayerId: number | null;
-  phase: 'WAITING' | 'PLAYING' | 'TRICK_END' | 'MATCH_END';
+  phase: 'WAITING' | 'PLAYING' | 'TRICK_END' | 'MATCH_END' | 'TOURNAMENT_WIN';
   roundCount: number;
   leadSuit?: Suit;
   difficulty: AIDifficulty;

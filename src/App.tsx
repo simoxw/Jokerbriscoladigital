@@ -279,7 +279,7 @@ const App: React.FC = () => {
     alert(`Codice ${roomCode} copiato!`);
   };
 
-  const startOnlineMatchAsHost = () => {
+  const startOnlineMatchAsHost = (resetTotalScores = false) => {
     if (!isHost) return;
     const deck = createDeck();
 
@@ -293,9 +293,9 @@ const App: React.FC = () => {
 
     const prevPlayers = matchState?.players;
     const players: PlayerData[] = [
-      { id: 0, name: connectedPlayers.find(p => p.index === 0)?.name || 'Host', index: 0, handSize: 3, hand: h1, role: 'NONE', pointsInMatch: 0, totalScore: prevPlayers?.[0].totalScore || 0, capturedCards: [] },
-      { id: 1, name: p2IsHuman ? p2IsHuman.name : 'IA1', index: 1, handSize: 3, hand: h2, role: 'NONE', pointsInMatch: 0, totalScore: prevPlayers?.[1].totalScore || 0, capturedCards: [] },
-      { id: 2, name: p3IsHuman ? p3IsHuman.name : 'IA2', index: 2, handSize: 3, hand: h3, role: 'NONE', pointsInMatch: 0, totalScore: prevPlayers?.[2].totalScore || 0, capturedCards: [] },
+      { id: 0, name: connectedPlayers.find(p => p.index === 0)?.name || 'Host', index: 0, handSize: 3, hand: h1, role: 'NONE', pointsInMatch: 0, totalScore: resetTotalScores ? 0 : (prevPlayers?.[0].totalScore || 0), capturedCards: [] },
+      { id: 1, name: p2IsHuman ? p2IsHuman.name : 'IA1', index: 1, handSize: 3, hand: h2, role: 'NONE', pointsInMatch: 0, totalScore: resetTotalScores ? 0 : (prevPlayers?.[1].totalScore || 0), capturedCards: [] },
+      { id: 2, name: p3IsHuman ? p3IsHuman.name : 'IA2', index: 2, handSize: 3, hand: h3, role: 'NONE', pointsInMatch: 0, totalScore: resetTotalScores ? 0 : (prevPlayers?.[2].totalScore || 0), capturedCards: [] },
     ];
 
     const initialState: MatchState = {
@@ -414,6 +414,8 @@ const App: React.FC = () => {
       const isGameOver = updatedPlayers.every(p => p.handSize === 0);
       let nextMessage = `Presa: ${winnerName} (+${trickPoints})`;
       let matchResult: 'JOKER_WIN' | 'ALLY_WIN' | 'NULL' = 'NULL';
+      let isTournamentOver = false;
+      let tournamentWinnerName = "";
 
       if (isGameOver) {
         const joker = updatedPlayers.find(p => p.role === 'JOKER');
@@ -433,9 +435,22 @@ const App: React.FC = () => {
           return p;
         });
 
-        if (matchResult === 'JOKER_WIN') nextMessage = `Il Joker Vince! (${joker?.pointsInMatch} pt)`;
-        else if (matchResult === 'ALLY_WIN') nextMessage = `Alleati Vincono! (${120 - (joker?.pointsInMatch || 0)} pt)`;
-        else nextMessage = "Partita Nulla";
+        // Tournament Win Condition: First to 10+ AND must have more points than others (no tie)
+        const sortedByTotal = [...updatedPlayers].sort((a, b) => b.totalScore - a.totalScore);
+        if (sortedByTotal[0].totalScore >= 10 && sortedByTotal[0].totalScore > sortedByTotal[1].totalScore) {
+          isTournamentOver = true;
+          tournamentWinnerName = sortedByTotal[0].name;
+        }
+
+        if (isTournamentOver) {
+          nextMessage = `🏆 TORNEO VINTO DA ${tournamentWinnerName.toUpperCase()}! 🏆`;
+        } else if (matchResult === 'JOKER_WIN') {
+          nextMessage = `Il Joker Vince! (${joker?.pointsInMatch} pt)`;
+        } else if (matchResult === 'ALLY_WIN') {
+          nextMessage = `Alleati Vincono! (${120 - (joker?.pointsInMatch || 0)} pt)`;
+        } else {
+          nextMessage = "Partita Nulla";
+        }
       }
 
       const newState: MatchState = {
@@ -448,7 +463,7 @@ const App: React.FC = () => {
         turnIndex: winnerId,
         leadSuit: undefined,
         roundCount: prev.roundCount + 1,
-        phase: isGameOver ? 'MATCH_END' : 'PLAYING',
+        phase: isGameOver ? (isTournamentOver ? 'TOURNAMENT_WIN' : 'MATCH_END') : 'PLAYING',
         waitingForNextTrick: false,
         tempWinnerId: null,
         history: [...prev.history, newHistoryRecord]
