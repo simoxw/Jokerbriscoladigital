@@ -89,6 +89,15 @@ const App: React.FC = () => {
     localStorage.setItem('joker_is_muted', isMuted.toString());
   }, [isMuted]);
 
+  const [isVibrationEnabled, setIsVibrationEnabled] = useState(() => {
+    return localStorage.getItem('joker_is_vibration_enabled') !== 'false'; // Default a true
+  });
+
+  useEffect(() => {
+    audioManager.setVibrationEnabled(isVibrationEnabled);
+    localStorage.setItem('joker_is_vibration_enabled', isVibrationEnabled.toString());
+  }, [isVibrationEnabled]);
+
   // Player name persistence
   const [playerName, setPlayerName] = useState(() => {
     return localStorage.getItem('joker_player_name') || "";
@@ -185,6 +194,7 @@ const App: React.FC = () => {
       if (player) {
         setMessage(`${player.name} ha giocato ${card.label}`);
         audioManager.play('CARD_PLAY');
+        audioManager.vibrate(10);
       }
     });
 
@@ -508,11 +518,19 @@ const App: React.FC = () => {
 
     if (gameMode === 'ONLINE') socket.emit('play_card', { code: roomCode, card, playerId: myOnlineIndex });
 
-    // Suono carta giocata localmente
+    // Suono carta giocata localmente e vibrazione
     audioManager.play('CARD_PLAY');
+    audioManager.vibrate(15);
   }, [matchState, gameMode, myOnlineIndex, roomCode]);
 
-  // VIBRAZIONE TURNO: Trigger quando diventa il mio turno (Removed)
+  // VIBRAZIONE TURNO: Trigger quando diventa il mio turno
+  useEffect(() => {
+    if (matchState?.phase === 'PLAYING' && !matchState.waitingForNextTrick) {
+      if (matchState.turnIndex === myOnlineIndex) {
+        audioManager.vibrate(25);
+      }
+    }
+  }, [matchState?.turnIndex, matchState?.phase, matchState?.waitingForNextTrick, myOnlineIndex]);
 
   // AI TURN LOGIC (Offline & Online Host)
   useEffect(() => {
@@ -559,8 +577,9 @@ const App: React.FC = () => {
           });
         }
 
-        // Suono carta IA
+        // Suono carta IA e vibrazione
         audioManager.play('CARD_PLAY');
+        audioManager.vibrate(10);
       }, 800);
       return () => clearTimeout(timer);
     }
@@ -579,7 +598,7 @@ const App: React.FC = () => {
 
   return (
     // Updated background to a lighter, professional green gradient
-    <div className="min-h-screen bg-gradient-to-br from-[#1e453e] to-[#0b2922] text-white font-sans flex flex-col items-center overflow-hidden">
+    <div className="h-screen w-full bg-gradient-to-br from-[#1e453e] to-[#0b2922] text-white font-sans flex flex-col items-center overflow-hidden" style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
 
       {view === 'menu' && (
         <MainMenu
@@ -617,8 +636,8 @@ const App: React.FC = () => {
       )}
 
       {view === 'game' && matchState && (
-        <div className="relative w-full min-h-screen flex flex-col max-w-[420px] pb-4 bg-transparent">
-          <div className="p-2 bg-black/40 backdrop-blur-md z-30 flex flex-col gap-2 shadow-2xl border-b border-white/10 relative">
+        <div className="relative w-full h-full flex flex-col max-w-[420px] bg-transparent">
+          <header className="p-2 bg-black/40 backdrop-blur-md z-30 flex flex-col gap-1 shadow-2xl border-b border-white/10 relative">
 
             {/* Briscola: Positioned Absolute Top-Right, Larger */}
             <div className="absolute top-2 right-2 flex flex-col items-center bg-black/30 p-1.5 rounded-lg border border-white/10 shadow-xl z-20">
@@ -634,11 +653,14 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Header Row: Buttons */}
-            <div className="flex justify-between items-start mb-2 pr-16">
-              <div className="flex gap-2">
+            <div className="flex justify-between items-start gap-2">
+              {/* Main Controls - Compact */}
+              <div className="flex flex-wrap gap-1.5 flex-1">
                 <button onClick={() => setIsMuted(prev => !prev)} className={`w-9 h-9 ${isMuted ? 'bg-slate-600' : 'bg-green-600'} rounded-xl flex items-center justify-center shadow-lg border ${isMuted ? 'border-slate-400' : 'border-green-400'} text-white transition-colors`} title={isMuted ? "Attiva Audio" : "Muta"}>
                   {isMuted ? '🔇' : '🔊'}
+                </button>
+                <button onClick={() => setIsVibrationEnabled(prev => !prev)} className={`w-9 h-9 ${!isVibrationEnabled ? 'bg-slate-600' : 'bg-fuchsia-600'} rounded-xl flex items-center justify-center shadow-lg border ${!isVibrationEnabled ? 'border-slate-400' : 'border-fuchsia-400'} text-white transition-colors`} title={isVibrationEnabled ? "Disattiva Vibrazione" : "Attiva Vibrazione"}>
+                  {isVibrationEnabled ? '📳' : '📴'}
                 </button>
                 <button onClick={() => setShowHistory(true)} className="w-9 h-9 bg-amber-600 hover:bg-amber-500 rounded-xl flex items-center justify-center shadow-lg border border-amber-400 text-white" title="Cronologia">📊</button>
                 <button onClick={() => setShowDifficulty(true)} className="w-9 h-9 bg-amber-600 hover:bg-amber-500 rounded-xl flex items-center justify-center shadow-lg border border-amber-400 text-white" title="IA">⚙️</button>
@@ -648,13 +670,12 @@ const App: React.FC = () => {
             </div>
 
             {/* Info Row: Scoreboards (Narrower width to accommodate Briscola) */}
-            <div className="flex flex-col gap-1 w-[58%] z-10">
+            <div className="flex flex-col gap-1 w-[58%] z-10 mt-3">
               <div className="w-full h-12"><ScoreBoard players={matchState.players} type="match" myIndex={myOnlineIndex} /></div>
               {gameMode === 'ONLINE' && <div className="text-center text-blue-300 text-[8px] uppercase font-bold">Room: {roomCode}</div>}
               <div className="w-full h-12"><ScoreBoard players={matchState.players} type="total" myIndex={myOnlineIndex} /></div>
             </div>
-          </div>
-
+          </header>
           <div className="py-3 px-3 flex justify-between items-start w-full gap-2 relative z-20">
             <IAIndicator player={matchState.players[(myOnlineIndex + 1) % 3]} isTurn={matchState.turnIndex === (myOnlineIndex + 1) % 3} isWinner={matchState.waitingForNextTrick && matchState.tempWinnerId === (myOnlineIndex + 1) % 3} />
             <div className="flex-1 flex justify-center"><StatusPanel game={matchState} message={message} /></div>

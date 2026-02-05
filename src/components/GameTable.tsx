@@ -111,10 +111,18 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
         {/* Central Play Area */}
         <div className="w-full max-w-[340px] aspect-square rounded-[40px] relative flex items-center justify-center">
 
-          {/* Center Deck Counter (Handwritten Style) */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none z-0 transform -rotate-12">
-            <div className="font-[cursive] text-red-500/90 text-2xl font-bold tracking-tighter" style={{ fontFamily: 'Comic Sans MS, cursive' }}>
-              MAZZO: {deckCount}
+          {/* Center Deck Counter - Horizontal & Professional */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none z-0">
+            <div className="flex flex-col items-center gap-1 bg-black/30 px-3 py-1.5 rounded-2xl border border-white/10 backdrop-blur-sm shadow-xl">
+              {/* Card Stack Icon Representation */}
+              <div className="relative w-5 h-7 mb-1">
+                <div className="absolute inset-0 bg-amber-800/40 border border-amber-600/30 rounded-sm translate-x-[2px] translate-y-[2px]"></div>
+                <div className="absolute inset-0 bg-amber-700/60 border border-amber-500/40 rounded-sm"></div>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] uppercase font-black text-amber-500/50 tracking-[2px]">Mazzo</span>
+                <span className="text-lg font-bold text-white tabular-nums leading-none">{deckCount}</span>
+              </div>
             </div>
           </div>
 
@@ -145,15 +153,19 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
       </div>
 
       {/* 2. HAND AREA */}
-      <div className={`bg-[#02120a] pb-4 pt-2 px-2 border-t border-white/10 mt-4 transition-opacity duration-300 relative z-30 ${waitingForNextTrick ? 'opacity-40 grayscale pointer-events-none' : 'opacity-100'}`}>
-        <div className="flex justify-center gap-2 h-32 items-end">
+      <div className={`bg-[#02120a] pb-[env(safe-area-inset-bottom,16px)] pt-2 px-2 border-t border-white/10 transition-opacity duration-300 relative z-30 ${waitingForNextTrick ? 'opacity-40 grayscale pointer-events-none' : 'opacity-100'}`}>
+        <div className="flex justify-center gap-2 items-end max-w-full overflow-hidden">
           {me.hand.map((card, idx) => {
-            const isNewCard = card.id > (game.roundCount * 10); // Heuristic to detect new cards
+            const isNewCard = card.id > (game.roundCount * 10);
             return (
               <div
                 key={card.id}
-                className={`transform transition-all duration-300 w-24 h-40 ${turnIndex === myIndex ? 'hover:-translate-y-4 cursor-pointer active:scale-95 animate-turn-glow rounded-xl' : 'opacity-80'} ${isNewCard ? 'animate-card-draw' : ''}`}
-                style={isNewCard ? { animationDelay: `${idx * 0.1}s` } : {}}
+                className={`transform transition-all duration-300 ${turnIndex === myIndex ? 'hover:-translate-y-4 cursor-pointer active:scale-95 animate-turn-glow rounded-xl' : 'opacity-80'} ${isNewCard ? 'animate-card-draw' : ''}`}
+                style={{
+                  width: 'clamp(70px, 28vw, 110px)',
+                  aspectRatio: '2/3',
+                  animationDelay: isNewCard ? `${idx * 0.1}s` : undefined
+                }}
               >
                 <ItalianCard
                   card={card}

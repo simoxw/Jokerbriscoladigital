@@ -15,11 +15,22 @@
     rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    :root {
+      --vh: 1vh;
+    }
+
     body {
       font-family: 'Inter', sans-serif;
       margin: 0;
       background: #0f172a;
       overscroll-behavior: none;
+      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
+      overflow: hidden;
+    }
+
+    #root {
+      height: 100%;
     }
 
     .font-cinzel {
@@ -80,11 +91,20 @@
       -webkit-tap-highlight-color: transparent;
     }
   </style>
-  <script type="module" crossorigin src="/Jokerbriscoladigital/assets/index-ByOzpNGo.js"></script>
+  <script type="module" crossorigin src="/Jokerbriscoladigital/assets/index-Cx60qHWH.js"></script>
 </head>
 
 <body>
   <div id="root"></div>
+  <script>
+    const updateVH = () => {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+    window.addEventListener('resize', updateVH);
+    window.addEventListener('orientationchange', updateVH);
+    updateVH();
+  </script>
 </body>
 
 </html>
