@@ -1,14 +1,15 @@
 # 🃏 Joker Briscola Multiplayer
 
 Un gioco di Briscola digitale moderno, fluido e ottimizzato per mobile, con supporto per il gioco **Offline** (contro IA) e **Online** (Multiplayer in tempo reale tramite Socket.io).
+
 Link diretto: https://simoxw.github.io/Jokerbriscoladigital/
 
--Obiettivo del gioco
-• Il gioco si svolge in più partite singole.
-• Ogni partita singola assegna punti ai giocatori in base al ruolo (Joker o alleato).
-• Lo scopo finale è essere il primo giocatore a raggiungere 10 o più punti.
+**Obiettivo del gioco**
+- Il gioco si svolge in più partite singole.
+- Ogni partita singola assegna punti ai giocatori in base al ruolo (Joker o alleato).
+- Lo scopo finale è essere il primo giocatore a raggiungere 10 o più punti.
 
-Regola di prese classiche della briscola.
+**Regola di prese classiche della briscola**
 - Setup di una partita singola
 1. Si mescola il mazzo (39 carte).
 2. Si distribuiscono 3 carte a ciascun giocatore.
@@ -16,7 +17,7 @@ Regola di prese classiche della briscola.
 il suo seme determina la briscola della partita singola.
 4. Le restanti carte formano il mazzo di pesca, coperto.
 
-Variante Joker – Assegnazione del ruolo
+**Variante Joker – Assegnazione del ruolo**
 
 Durante la partita singola si applica la seguente regola speciale:
 1. Il primo giocatore che gioca una carta di briscola diventa il Joker.
@@ -29,7 +30,7 @@ presa.
 4. Il ruolo di Joker viene azzerato alla fine di ogni partita singola. Nella partita successiva, il Joker verrà
 nuovamente determinato secondo la stessa regola.
 
-Fine della partita singola e calcolo dei punti
+**Fine della partita singola e calcolo dei punti**
 Alla fine di una partita singola:
 1. Ogni giocatore somma i punti delle carte raccolte nelle proprie prese.
 2. Si ottengono tre punteggi individuali, la cui somma è sempre 120.
@@ -38,7 +39,7 @@ Alla fine di una partita singola:
 - Vittoria degli alleati: i due alleati vincono la partita singola se la somma dei loro punti è almeno 71.
 - Partita singola nulla: se il Joker non raggiunge 51 puntio e gli alleati non raggiungono insieme 71 punti, allora la partita singola è nulla e non assegna punti.
 
-Punteggio a lungo termine (partita generale)
+**Punteggio a lungo termine (partita generale)**
 In base al risultato di ogni partita singola:
 - Se vince il Joker: il Joker guadagna 2 punti.
 - Se vincono gli alleati: ciascuno dei due alleati guadagna 1 punto.
