@@ -676,13 +676,13 @@ const App: React.FC = () => {
               <div className="w-full h-12"><ScoreBoard players={matchState.players} type="total" myIndex={myOnlineIndex} /></div>
             </div>
           </header>
-          <div className="py-3 px-3 flex justify-between items-start w-full gap-2 relative z-20">
+          <div className="py-1.5 px-3 flex justify-between items-center w-full gap-2 relative z-20">
             <IAIndicator player={matchState.players[(myOnlineIndex + 1) % 3]} isTurn={matchState.turnIndex === (myOnlineIndex + 1) % 3} isWinner={matchState.waitingForNextTrick && matchState.tempWinnerId === (myOnlineIndex + 1) % 3} />
             <div className="flex-1 flex justify-center"><StatusPanel game={matchState} message={message} /></div>
             <IAIndicator player={matchState.players[(myOnlineIndex + 2) % 3]} isTurn={matchState.turnIndex === (myOnlineIndex + 2) % 3} isWinner={matchState.waitingForNextTrick && matchState.tempWinnerId === (myOnlineIndex + 2) % 3} />
           </div>
 
-          <div className="flex-1 relative flex flex-col justify-end overflow-hidden">
+          <div className="flex-1 relative flex flex-col justify-end">
             <GameTable game={matchState} onCardClick={handleLocalCardPlayed} myPlayerId={myOnlineIndex} />
           </div>
 

@@ -33,7 +33,7 @@ const GameDialogs: React.FC<GameDialogsProps> = ({
         <>
             {/* Trick Collection Button (Offline) */}
             {gameMode === 'OFFLINE' && matchState.waitingForNextTrick && matchState.tempWinnerId !== null && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[calc(50%+15px)] z-50">
                     <button
                         onClick={() => completeTrick(matchState.tempWinnerId!)}
                         className="bg-amber-500 text-black font-black uppercase text-sm py-4 px-10 rounded-full shadow-[0_0_30px_rgba(251,191,36,0.6)] border-4 border-white animate-pulse hover:scale-105 transition-transform active:scale-95"
