@@ -681,12 +681,18 @@ const App: React.FC = () => {
 
             {/* Briscola: Positioned Absolute Top-Right */}
             <div
-              className="absolute top-1.5 right-1.5 aspect-[2/3] z-50 transition-all"
+              className="absolute top-1.5 right-1.5 aspect-[2/3] z-50 transition-all font-sans"
               style={{ width: 'var(--briscola-w)' }}
             >
               <div className="text-[7px] font-black text-amber-500 uppercase tracking-widest text-center mb-0.5 bg-black/40 rounded py-0.5 border border-amber-500/20">BRISCOLA</div>
-              <div className="w-full h-full border-2 border-amber-500/30 rounded-lg shadow-[0_0_20px_rgba(251,191,36,0.2)] overflow-hidden">
-                <ItalianCard card={matchState.deck[0]} isFluid />
+              <div className="w-full h-full border-2 border-amber-500/30 rounded-lg shadow-[0_0_20px_rgba(251,191,36,0.2)] overflow-hidden bg-black/20">
+                {matchState.briscola ? (
+                  <ItalianCard card={matchState.briscola} isFluid />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center opacity-20">
+                    <span className="text-[2cqw] font-bold text-amber-500">VUOTO</span>
+                  </div>
+                )}
               </div>
             </div>
 
