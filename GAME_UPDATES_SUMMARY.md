@@ -2,11 +2,11 @@
 
 Questo documento riassume le principali funzioni e le modifiche architettoniche apportate per migliorare l'esperienza mobile e il feedback utente. Utile per analisi future e manutenzione.
 
-## 1. Architettura Mobile & Layout
-- **File**: `index.html`, `src/App.tsx`
-- **Universal Scaling (vh/vmin)**: Il layout non si basa più solo sulla larghezza (`vw`), ma su unità relative all'altezza (`vh`) e alla dimensione minima del viewport (`vmin`). Questo garantisce che su schermi bassi il gioco si comprima proporzionalmente.
-- **Flex-Shrink Architecture**: Tutti i componenti (Header, ScoreBoards, Tavolo) hanno il permesso di rimpicciolirsi (`min-h-0`, `flex-shrink`) per lasciare spazio alla mano del giocatore.
-- **Scroll Fallback**: Aggiunto `overflow-y-auto` sul contenitore principale per garantire che nulla sia mai "tagliato" fuori dallo schermo su dispositivi piccolissimi.
+## 1. Architettura Mobile-Mirror & Container Queries
+- **File**: `src/App.tsx`, tutti i componenti.
+- **Container Queries (cqw)**: Il layout è migrato da `vmin` a `cqw` (Container Query Width). Il contenitore principale (`game-container`) è definito con `container-type: inline-size`. Tutte le dimensioni (carte, bottoni, font, spaziature) scalano ora in base alla larghezza del contenitore, non del viewport.
+- **Real-Mobile Desktop View**: Su desktop, l'app è racchiusa in un contenitore di **420px** (`max-w-[420px]`), emulando perfettamente le proporzioni di uno smartphone moderno (iPhone Pro Max style).
+- **Z-Index Layering**: Gli indicatori IA sono stati impostati a `z-10` e il tavolo di gioco a `z-50` (con `overflow-visible`) per garantire che le carte giocate passino sempre sopra gli indicatori durante le animazioni.
 
 ## 2. Sistema di Feedback (Audio & Vibrazione)
 - **File**: `src/utils/audio.ts`, `src/App.tsx`
@@ -17,12 +17,13 @@ Questo documento riassume le principali funzioni e le modifiche architettoniche 
     - `useEffect` per cambio turno: Trigger quando `turnIndex === myOnlineIndex`.
 - **Persistenza**: Gli stati `isMuted` e `isVibrationEnabled` sono salvati in `localStorage` (`joker_is_muted`, `joker_is_vibration_enabled`).
 
-## 3. UI Dinamica & Card Scaling
-- **Responsive Card Sizes**: Le carte usano ora `vmin` con uno scaling generoso (es. `clamp(80px, 30vmin, 120px)` per il tavolo). Se lo schermo è basso, le carte si rimpiccioliscono automaticamente mantenendo la massima visibilità possibile.
-- **Smart Hover Experience**: Implementata media query `@media (hover: hover)` per le carte in mano. Questo previene l'effetto "carta sollevata fissa" su mobile (sticky hover), riservando l'animazione di sollevamento ai soli utenti con mouse/PC.
-- **Deck Relocation**: Spostato il contatore del mazzo dal centro del tavolo alla parte alta-centrale per liberare l'area di gioco principale e migliorare la leggibilità.
-- **UI Tweaks**: Alzato il pulsante "RACCOGLI" di 15px per non sovrapporsi alle carte giocate e spostata la corona della vittoria a fianco dei nomi dei giocatori.
-- **Safe Area Support**: Utilizzato `pb-[env(safe-area-inset-bottom)]` nella Hand Area per evitare che gli indicatori di sistema (barra home di iOS/Android) coprano le carte.
+## 3. UI Dinamica & Card Scaling (CQW Migration)
+- **File**: `src/components/GameTable.tsx`, `App.tsx` (CSS Variables)
+- **Responsive Variables**: Utilizzo di variabili CSS centralizzate in `App.tsx` come `--card-w-table: 29cqw`, `--card-w-hand: 26cqw`.
+- **Triple Profiling (Media Queries)**:
+    - **Small Mobile (< 480px)**: Layout standard originale per massima leggibilità.
+    - **Large Mobile (480px - 767px)**: Carte tavolo e briscola ingrandite del 15% per sfruttare lo spazio dei phablet.
+    - **Desktop/Tablet (> 768px)**: Scaling compatto con container fisso a 420px per un look professionale ed elegante.
 
 ## 4. Animazioni CSS
 - **File**: `index.html` (Styles)
@@ -34,3 +35,18 @@ Questo documento riassume le principali funzioni e le modifiche architettoniche 
 - **File**: `src/App.tsx`
 - **matchState**: Stato globale che contiene la logica del mazzo, punteggi e fasi.
 - **socket.io**: Gestisce la sincronizzazione real-time. Funzioni chiave: `sync_game_state`, `remote_play`, `ai_remote_play`.
+
+## 6. Sincronizzazione Messaggi & Stato Online
+- **File**: `src/App.tsx`, `src/types.ts`
+- **Message Syncing**: Aggiunto il campo `message` all'interfaccia `MatchState`. L'host ora invia non solo lo stato dei punti e delle carte, ma anche il testo del messaggio corrente (es. "Presa: Nome (+13)").
+- **Socket Relay**: Utilizzo di `update_game_state` (Host) -> `sync_game_state` (Client) per una coerenza millimetrica delle comunicazioni di gioco su tutti i dispositivi collegati.
+
+## 7. Ottimizzazione Barra di Stato (Collisione Briscola)
+- **File**: `src/App.tsx`
+- **Horizontal Compression**: La barra di stato che contiene gli indicatori IA e il messaggio di sistema è stata rimpicciolita orizzontalmente.
+- **Collision Avoidance**: Aggiunto un padding destro di `120px` per garantire che l'indicatore IA2 non finisca mai sotto la carta Briscola (che è posizionata assolutamente in alto a destra).
+- **Centered Layout**: Cambiato l'allineamento da `justify-between` a `justify-center` con un gap controllato per mantenere gli elementi vicini e leggibili al centro del tavolo.
+
+## 8. Ottimizzazioni Desktop Premium
+- **Constraint-Based Layout**: Rimossi tutti i prefissi `lg:` e le posizioni `fixed`. L'interfaccia è ora una colonna unica e coerente che si adatta elasticamente al contenitore centrale.
+- **Shadow & Depth**: Aggiunte ombre profonde (`shadow-[0_0_80px_rgba(0,0,0,0.6)]`) e bordi sottili al container principale per staccarlo con eleganza dallo sfondo gradiente su monitor grandi.
