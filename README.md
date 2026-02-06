@@ -195,7 +195,7 @@ Il progetto è strutturato per essere ospitato in modo ibrido su GitHub Pages (f
 ### 2. Configurazione Frontend (GitHub Pages)
 Per fare in modo che il sito si colleghi al server giusto su GitHub:
 1. Crea un file `.env.production` nella radice del progetto locale.
-2. Aggiungi la riga: `VITE_SOCKET_URL=https://jokerbriscoladigital.onrender.com`
+2. Aggiungi la riga: `VITE_SOCKET_URL=https://nomedeltuoserver.onrender.com`
 3. Esegui `npm run build`.
 4. Copia il contenuto di `dist` nel tuo repository GitHub e fai il push.
 
