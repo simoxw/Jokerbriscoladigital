@@ -14,9 +14,24 @@ interface ItalianCardProps {
 
 const ItalianCard: React.FC<ItalianCardProps> = ({ card, onClick, isHidden, isSmall, isFluid, disabled, rotation = 0 }) => {
   const [imgError, setImgError] = useState(false);
+  const [isLongPressed, setIsLongPressed] = useState(false);
+  const [touchTimer, setTouchTimer] = useState<NodeJS.Timeout | null>(null);
 
   // Determina la base del percorso (vuota in locale, '/Jokerbriscoladigital/' su GitHub)
   const baseUrl = import.meta.env.BASE_URL;
+
+  const handleTouchStart = () => {
+    if (disabled) return;
+    const timer = setTimeout(() => {
+      setIsLongPressed(true);
+    }, 400); // 400ms per attivare lo zoom
+    setTouchTimer(timer);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchTimer) clearTimeout(touchTimer);
+    setIsLongPressed(false);
+  };
 
   let sizeClasses = "w-full h-full"; // Default proporzionale al contenitore
 
@@ -42,13 +57,18 @@ const ItalianCard: React.FC<ItalianCardProps> = ({ card, onClick, isHidden, isSm
   return (
     <div
       onClick={!disabled ? onClick : undefined}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
       style={rotationStyle}
       className={`
         ${sizeClasses}
         relative bg-[#f8fafc] text-slate-900 rounded-xl border-[3px] border-amber-900/40 
         flex flex-col items-center shadow-2xl cursor-pointer overflow-hidden
         transition-all duration-200
-        ${disabled ? 'opacity-40 grayscale pointer-events-none' : 'hover:scale-105 active:scale-95 hover:border-amber-500 hover:shadow-amber-500/30'}
+        ${disabled ? 'opacity-40 grayscale pointer-events-none' : ''}
+        ${!disabled && !isLongPressed ? 'hover:scale-105 active:scale-95 hover:border-amber-500 hover:shadow-amber-500/30' : ''}
+        ${isLongPressed ? 'scale-125 z-[100] border-amber-400 shadow-[0_0_40px_rgba(251,191,36,0.6)]' : ''}
       `}
     >
       {!imgError ? (
@@ -57,6 +77,7 @@ const ItalianCard: React.FC<ItalianCardProps> = ({ card, onClick, isHidden, isSm
           alt={card.label}
           className="w-full h-full object-fill"
           onError={() => setImgError(true)}
+          draggable={false}
         />
       ) : (
         <div className="w-full h-full flex flex-col p-1">
