@@ -18,14 +18,7 @@ const ItalianCard: React.FC<ItalianCardProps> = ({ card, onClick, isHidden, isSm
   // Determina la base del percorso (vuota in locale, '/Jokerbriscoladigital/' su GitHub)
   const baseUrl = import.meta.env.BASE_URL;
 
-  let sizeClasses = "";
-  if (isFluid) {
-    sizeClasses = "w-full h-full";
-  } else if (isSmall) {
-    sizeClasses = "w-16 h-24 text-xs";
-  } else {
-    sizeClasses = "w-24 h-36 text-sm";
-  }
+  let sizeClasses = "w-full h-full"; // Default proporzionale al contenitore
 
   const rotationStyle = rotation ? { transform: `rotate(${rotation}deg)` } : {};
 

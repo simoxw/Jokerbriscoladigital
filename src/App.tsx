@@ -599,6 +599,38 @@ const App: React.FC = () => {
   return (
     // Updated background to a lighter, professional green gradient
     <div className="h-screen w-full bg-gradient-to-br from-[#1e453e] to-[#0b2922] text-white font-sans flex flex-col items-center overflow-y-auto overflow-x-hidden touch-pan-y" style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
+      <style>{`
+        :root {
+          /* Default (Small Mobile): < 480px */
+          --card-w-table: 29cqw;
+          --card-w-hand: 26cqw;
+          --header-score-w: 35cqw;
+          --button-size: 9.5cqw;
+          --ia-indicator-gap: 4cqw;
+          --briscola-w: 20cqw;
+        }
+
+        @media (min-width: 480px) {
+          :root {
+            /* Large Mobile: 480px - 767px (Aumento carte tavolo e briscola) */
+            --card-w-table: 33cqw;
+            --card-w-hand: 28cqw;
+            --briscola-w: 24cqw;
+          }
+        }
+
+        @media (min-width: 768px) {
+          :root {
+            /* Compact Desktop/Tablet: Fissato come da feedback precedente */
+            --card-w-table: 26cqw;
+            --card-w-hand: 24cqw;
+            --header-score-w: 32cqw;
+            --button-size: 8.5cqw;
+            --ia-indicator-gap: 3cqw;
+            --briscola-w: 22cqw;
+          }
+        }
+      `}</style>
 
       {view === 'menu' && (
         <MainMenu
@@ -636,54 +668,60 @@ const App: React.FC = () => {
       )}
 
       {view === 'game' && matchState && (
-        <div className="relative w-full h-full flex flex-col max-w-[420px] bg-transparent min-h-0 flex-shrink">
-          <header className="p-1.5 bg-black/40 backdrop-blur-md z-30 flex flex-col gap-0.5 shadow-2xl border-b border-white/10 relative flex-shrink-0">
+        <div
+          className="relative w-full h-full flex flex-col sm:max-w-[420px] min-w-[320px] mx-auto bg-[#1e453e]/20 backdrop-blur-sm min-h-0 flex-shrink transition-all duration-500 overflow-visible shadow-[0_0_80px_rgba(0,0,0,0.6)] border-x border-white/5"
+          style={{ containerType: 'inline-size' }}
+        >
 
-            {/* Briscola: Positioned Absolute Top-Right, Restored to larger size as per user request */}
-            <div className="absolute top-1 right-1 flex flex-col items-center bg-black/40 p-1.5 rounded-xl border border-white/10 shadow-2xl z-20">
-              <span className="text-[8px] text-amber-500 font-bold uppercase tracking-widest mb-1 leading-none">Briscola</span>
-              <div className="w-[22vw] max-w-[100px] aspect-[2/3] shadow-inner">
-                {matchState.briscola ? (
-                  <ItalianCard card={matchState.briscola} isFluid />
-                ) : (
-                  <div className="w-full h-full border border-dashed border-white/20 rounded flex items-center justify-center bg-white/5">
-                    <span className="text-[6px] text-white/30">Finito</span>
-                  </div>
-                )}
+          <header className="p-1.5 px-3 bg-black/40 backdrop-blur-md z-30 flex flex-col gap-1 shadow-2xl border-b border-white/10 relative flex-shrink-0">
+
+            {/* Briscola: Positioned Absolute Top-Right */}
+            <div
+              className="absolute top-1.5 right-1.5 aspect-[2/3] z-50 transition-all"
+              style={{ width: 'var(--briscola-w)' }}
+            >
+              <div className="text-[7px] font-black text-amber-500 uppercase tracking-widest text-center mb-0.5 bg-black/40 rounded py-0.5 border border-amber-500/20">BRISCOLA</div>
+              <div className="w-full h-full border-2 border-amber-500/30 rounded-lg shadow-[0_0_20px_rgba(251,191,36,0.2)] overflow-hidden">
+                <ItalianCard card={matchState.deck[0]} isFluid />
               </div>
             </div>
 
-            <div className="flex justify-between items-start gap-2">
-              {/* Main Controls - Compact */}
-              <div className="flex flex-wrap gap-1.5 flex-1">
-                <button onClick={() => setIsMuted(prev => !prev)} className={`w-8 h-8 ${isMuted ? 'bg-slate-600' : 'bg-green-600'} rounded-lg flex items-center justify-center shadow-lg border ${isMuted ? 'border-slate-400' : 'border-green-400'} text-xs transition-colors`} title={isMuted ? "Attiva Audio" : "Muta"}>
-                  {isMuted ? '🔇' : '🔊'}
+            <div className="flex justify-between items-start gap-[2cqw]">
+              {/* Main Controls - Proportional buttons */}
+              <div className="flex flex-wrap gap-[1.5cqw] flex-1">
+                <button onClick={() => setIsMuted(prev => !prev)} className={`w-[var(--button-size)] h-[var(--button-size)] ${isMuted ? 'bg-slate-600' : 'bg-green-600'} rounded-[1.5cqw] flex items-center justify-center shadow-lg border ${isMuted ? 'border-slate-400' : 'border-green-400'} text-[4cqw] transition-all active:scale-95`} title={isMuted ? "Attiva Audio" : "Muta"}>
+                  {isMuted ? '🔊' : '🔇'}
                 </button>
-                <button onClick={() => setIsVibrationEnabled(prev => !prev)} className={`w-8 h-8 ${!isVibrationEnabled ? 'bg-slate-600' : 'bg-fuchsia-600'} rounded-lg flex items-center justify-center shadow-lg border ${!isVibrationEnabled ? 'border-slate-400' : 'border-fuchsia-400'} text-xs transition-colors`} title={isVibrationEnabled ? "Disattiva Vibrazione" : "Attiva Vibrazione"}>
+                <button onClick={() => setIsVibrationEnabled(prev => !prev)} className={`w-[var(--button-size)] h-[var(--button-size)] ${!isVibrationEnabled ? 'bg-slate-600' : 'bg-fuchsia-600'} rounded-[1.5cqw] flex items-center justify-center shadow-lg border ${!isVibrationEnabled ? 'border-slate-400' : 'border-fuchsia-400'} text-[4cqw] transition-all active:scale-95`} title={isVibrationEnabled ? "Disattiva Vibrazione" : "Attiva Vibrazione"}>
                   {isVibrationEnabled ? '📳' : '📴'}
                 </button>
-                <button onClick={() => setShowHistory(true)} className="w-8 h-8 bg-amber-600 hover:bg-amber-500 rounded-lg flex items-center justify-center shadow-lg border border-amber-400 text-xs" title="Cronologia">📊</button>
-                <button onClick={() => setShowDifficulty(true)} className="w-8 h-8 bg-amber-600 hover:bg-amber-500 rounded-lg flex items-center justify-center shadow-lg border border-amber-400 text-xs" title="IA">⚙️</button>
-                <button onClick={() => setShowRestartConfirm(true)} className="w-8 h-8 bg-blue-600 hover:bg-blue-500 rounded-lg flex items-center justify-center shadow-lg border border-blue-400 text-xs transition-colors" title="Riavvia">🔄</button>
-                <button onClick={() => { setView('menu'); if (gameMode === 'ONLINE') socket.emit('disconnect_game'); }} className="w-8 h-8 bg-red-600 hover:bg-red-500 rounded-lg flex items-center justify-center shadow-lg border border-red-400 text-[10px] text-white font-black" title="Esci">ESC</button>
+                <button onClick={() => setShowHistory(true)} className="w-[var(--button-size)] h-[var(--button-size)] bg-amber-600 hover:bg-amber-500 rounded-[1.5cqw] flex items-center justify-center shadow-lg border border-amber-400 text-[4cqw] active:scale-95" title="Cronologia">📊</button>
+                <button onClick={() => setShowDifficulty(true)} className="w-[var(--button-size)] h-[var(--button-size)] bg-amber-600 hover:bg-amber-500 rounded-[1.5cqw] flex items-center justify-center shadow-lg border border-amber-400 text-[4cqw] active:scale-95" title="IA">⚙️</button>
+                <button onClick={() => setShowRestartConfirm(true)} className="w-[var(--button-size)] h-[var(--button-size)] bg-blue-600 hover:bg-blue-500 rounded-[1.5cqw] flex items-center justify-center shadow-lg border border-blue-400 text-[4cqw] active:scale-95 transition-all" title="Riavvia">🔄</button>
+                <button onClick={() => { setView('menu'); if (gameMode === 'ONLINE') socket.emit('disconnect_game'); }} className="w-[var(--button-size)] h-[var(--button-size)] bg-red-600 hover:bg-red-500 rounded-[1.5cqw] flex items-center justify-center shadow-lg border border-red-400 text-[2.5cqw] text-white font-black active:scale-95 transition-all uppercase" title="Esci">Esc</button>
               </div>
             </div>
 
-            {/* Info Row: Scoreboards (Narrower width to accommodate Briscola) */}
-            <div className="flex flex-col gap-1 w-[60%] z-10 mt-1 min-h-0 flex-shrink">
-              <div className="w-full flex-shrink min-h-0 overflow-hidden"><ScoreBoard players={matchState.players} type="match" myIndex={myOnlineIndex} /></div>
-              {gameMode === 'ONLINE' && <div className="text-center text-blue-300 text-[8px] uppercase font-bold leading-none">Room: {roomCode}</div>}
+            {/* Info Row: Scoreboard Torneo - Proportional */}
+            <div className="flex flex-col gap-[0.5cqw] w-[var(--header-score-w)] z-10 mt-[1cqw] min-h-0 flex-shrink transition-all">
+              {gameMode === 'ONLINE' && <div className="text-center text-blue-300 text-[2cqw] uppercase font-bold leading-none mb-[0.5cqw]">Room: {roomCode}</div>}
               <div className="w-full flex-shrink min-h-0 overflow-hidden"><ScoreBoard players={matchState.players} type="total" myIndex={myOnlineIndex} /></div>
             </div>
+
           </header>
-          <div className="py-1 px-3 flex justify-between items-center w-full gap-2 relative z-10 flex-shrink-0">
-            <IAIndicator player={matchState.players[(myOnlineIndex + 1) % 3]} isTurn={matchState.turnIndex === (myOnlineIndex + 1) % 3} isWinner={matchState.waitingForNextTrick && matchState.tempWinnerId === (myOnlineIndex + 1) % 3} />
-            <div className="flex-1 flex justify-center scale-90 sm:scale-100"><StatusPanel game={matchState} message={message} /></div>
-            <IAIndicator player={matchState.players[(myOnlineIndex + 2) % 3]} isTurn={matchState.turnIndex === (myOnlineIndex + 2) % 3} isWinner={matchState.waitingForNextTrick && matchState.tempWinnerId === (myOnlineIndex + 2) % 3} />
+
+          {/* Area Indicatori IA: box centrato elastico */}
+          <div className="py-[0.5cqw] px-[2cqw] flex justify-center items-center w-full z-30 flex-shrink-0 relative">
+            <div className="bg-black/40 backdrop-blur-md rounded-full border border-white/5 py-[0.5cqw] px-[4cqw] flex items-center gap-[var(--ia-indicator-gap)] w-fit shadow-xl transition-all">
+              <IAIndicator player={matchState.players[(myOnlineIndex + 1) % 3]} isTurn={matchState.turnIndex === (myOnlineIndex + 1) % 3} isWinner={matchState.waitingForNextTrick && matchState.tempWinnerId === (myOnlineIndex + 1) % 3} />
+              <div className="w-px h-[2cqw] bg-white/10 mx-[1cqw]"></div>
+              <IAIndicator player={matchState.players[(myOnlineIndex + 2) % 3]} isTurn={matchState.turnIndex === (myOnlineIndex + 2) % 3} isWinner={matchState.waitingForNextTrick && matchState.tempWinnerId === (myOnlineIndex + 2) % 3} />
+            </div>
           </div>
 
-          <div className="flex-1 relative flex flex-col justify-end">
-            <GameTable game={matchState} onCardClick={handleLocalCardPlayed} myPlayerId={myOnlineIndex} />
+          {/* Tavolo: z-40 per stare sopra la barra IA */}
+          <div className="flex-1 relative flex flex-col justify-center z-40 overflow-visible min-h-0">
+            <GameTable game={matchState} onCardClick={handleLocalCardPlayed} myPlayerId={myOnlineIndex} message={message} />
           </div>
 
           {showHistory && <HistoryPanel history={matchState.history} onClose={() => setShowHistory(false)} />}
