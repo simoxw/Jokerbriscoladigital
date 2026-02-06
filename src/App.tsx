@@ -55,7 +55,8 @@ const applyCardPlay = (prev: MatchState, card: Card, playerId: number): { newSta
     playedCards: [...prev.playedCards, { playerId, card }],
     turnIndex: (prev.turnIndex + 1) % 3,
     jokerPlayerId: newJokerId,
-    leadSuit: prev.playedCards.length === 0 ? card.suit : prev.leadSuit
+    leadSuit: prev.playedCards.length === 0 ? card.suit : prev.leadSuit,
+    message: msg || prev.message
   };
 
   return { newState, message: msg };
@@ -203,8 +204,10 @@ const App: React.FC = () => {
       console.log('[CLIENT] 🔄 sync_game_state ricevuto:', state);
       setMatchState(state);
 
-      // Aggiorna anche il messaggio in base allo stato ricevuto
-      if (state.waitingForNextTrick && state.tempWinnerId !== null) {
+      // Aggiorna anche il messaggio in base allo stato ricevuto (priorità al messaggio esplicito)
+      if (state.message) {
+        setMessage(state.message);
+      } else if (state.waitingForNextTrick && state.tempWinnerId !== null) {
         const winner = state.players.find(p => p.id === state.tempWinnerId);
         if (winner) {
           const trickPoints = state.playedCards.reduce((acc, pc) => acc + pc.card.value, 0);
@@ -478,7 +481,8 @@ const App: React.FC = () => {
         phase: isGameOver ? (isTournamentOver ? 'TOURNAMENT_WIN' : 'MATCH_END') : 'PLAYING',
         waitingForNextTrick: false,
         tempWinnerId: null,
-        history: [...prev.history, newHistoryRecord]
+        history: [...prev.history, newHistoryRecord],
+        message: nextMessage
       };
 
       setMessage(nextMessage);

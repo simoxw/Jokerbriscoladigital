@@ -49,4 +49,5 @@ export interface MatchState {
   waitingForNextTrick: boolean;
   tempWinnerId: number | null;
   history: TrickRecord[];
+  message?: string;
 }
