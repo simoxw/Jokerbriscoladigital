@@ -190,7 +190,7 @@ Il progetto è strutturato per essere ospitato in modo ibrido su GitHub Pages (f
 ### 1. Configurazione Render (Backend)
 1. Carica il progetto su Render come **Web Service**.
 2. **Start Command**: `node server.js`
-3. Il server risponderà a `https://jokerbriscoladigital.onrender.com`.
+3. Il server risponderà a `https://nomedeltuoserver.onrender.com`.
 
 ### 2. Configurazione Frontend (GitHub Pages)
 Per fare in modo che il sito si colleghi al server giusto su GitHub:
