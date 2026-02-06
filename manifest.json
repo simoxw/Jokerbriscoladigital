@@ -1,12 +1,22 @@
 {
-    "name": "Joker Briscola Digital",
-    "short_name": "JokerBriscola",
-    "description": "Un gioco di Briscola digitale moderno e ottimizzato.",
+    "name": "Joker Briscola - Gioco di Carte Italiano",
+    "short_name": "Joker Briscola",
+    "description": "Sfida gli amici o l'IA nella variante Joker della classica briscola. Gioca offline o online!",
     "start_url": "./",
     "display": "standalone",
+    "display_override": [
+        "window-controls-overlay",
+        "standalone"
+    ],
+    "orientation": "portrait-primary",
     "background_color": "#0b2922",
     "theme_color": "#1e453e",
-    "orientation": "portrait",
+    "categories": [
+        "games",
+        "entertainment"
+    ],
+    "lang": "it",
+    "dir": "ltr",
     "icons": [
         {
             "src": "./assets/icon.png",
@@ -20,5 +30,20 @@
             "type": "image/png",
             "purpose": "any maskable"
         }
-    ]
+    ],
+    "shortcuts": [
+        {
+            "name": "Partita Offline",
+            "short_name": "Offline",
+            "description": "Gioca subito contro l'IA",
+            "url": "./",
+            "icons": [
+                {
+                    "src": "./assets/icon.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ],
+    "prefer_related_applications": false
 }
