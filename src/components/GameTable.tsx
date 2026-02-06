@@ -18,7 +18,7 @@ const RoleBadge = ({ role }: { role: PlayerRole }) => {
   if (role === 'NONE') return null;
   const isJoker = role === 'JOKER';
   return (
-    <div className={`mt-[1cqw] px-[1.5cqw] py-[0.5cqw] rounded-[0.5cqw] text-[1.4cqw] font-black uppercase tracking-tighter shadow-sm border transition-all ${isJoker
+    <div className={`mt-[1cqw] px-[1.5cqw] py-[0.5cqw] rounded-[0.5cqw] text-[1.8cqw] font-black uppercase tracking-tighter shadow-sm border transition-all ${isJoker
       ? 'bg-fuchsia-600 text-white border-fuchsia-400 shadow-fuchsia-500/40 animate-pulse'
       : 'bg-blue-600 text-white border-blue-400 opacity-80'
       }`}>
@@ -90,11 +90,11 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
           )}
         </div>
 
-        <div className="flex flex-col items-center leading-none mt-[1cqw] h-[6cqw] justify-start">
+        <div className="flex flex-col items-center leading-none mt-[1.5cqw] h-[6cqw] justify-start">
           <div className="flex items-center gap-[0.5cqw]">
-            {isWinner(playerId) && <span className="text-[2cqw] animate-bounce">👑</span>}
-            <span className={`text-[1.8cqw] font-bold truncate max-w-full ${isTurn ? 'text-amber-400' : 'text-amber-500/40'}`}>{playerName}</span>
-            {isWinner(playerId) && <span className="text-[2cqw] animate-bounce">👑</span>}
+            {isWinner(playerId) && <span className="text-[2.4cqw] animate-bounce">👑</span>}
+            <span className={`text-[2.5cqw] font-bold truncate max-w-full ${isTurn ? 'text-amber-400' : 'text-amber-500/40'}`}>{playerName}</span>
+            {isWinner(playerId) && <span className="text-[2.4cqw] animate-bounce">👑</span>}
           </div>
           <RoleBadge role={p.role} />
         </div>
@@ -141,10 +141,10 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
           {/* Player Slots Grid - Spreads out vertically in the rectangle */}
           <div className="absolute w-full h-full p-0 grid grid-cols-3 grid-rows-2 z-50 pointer-events-none">
             {/* Row 1: Left (Next) & Right (Prev) - Shifted to edges */}
-            <div className="col-start-1 row-start-1 flex items-center justify-start pt-[15%]">
+            <div className="col-start-1 row-start-1 flex items-center justify-start pt-[15%] -translate-y-[5px]">
               {renderSlot(leftIndex, leftPlayer.name, 'IA1')}
             </div>
-            <div className="col-start-3 row-start-1 flex items-center justify-end pt-[15%]">
+            <div className="col-start-3 row-start-1 flex items-center justify-end pt-[15%] -translate-y-[5px]">
               {renderSlot(rightIndex, rightPlayer.name, 'IA2')}
             </div>
 

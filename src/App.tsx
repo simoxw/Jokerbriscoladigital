@@ -606,7 +606,7 @@ const App: React.FC = () => {
       <style>{`
         :root {
           /* Default (Small Mobile): < 480px */
-          --card-w-table: 29cqw;
+          --card-w-table: 27cqw;
           --card-w-hand: 26cqw;
           --header-score-w: 35cqw;
           --button-size: 9.5cqw;
@@ -617,7 +617,7 @@ const App: React.FC = () => {
         @media (min-width: 480px) {
           :root {
             /* Large Mobile: 480px - 767px (Aumento carte tavolo e briscola) */
-            --card-w-table: 33cqw;
+            --card-w-table: 47cqw;
             --card-w-hand: 28cqw;
             --briscola-w: 24cqw;
           }
@@ -626,7 +626,7 @@ const App: React.FC = () => {
         @media (min-width: 768px) {
           :root {
             /* Compact Desktop/Tablet: Fissato come da feedback precedente */
-            --card-w-table: 26cqw;
+            --card-w-table: 30cqw;
             --card-w-hand: 24cqw;
             --header-score-w: 32cqw;
             --button-size: 8.5cqw;
