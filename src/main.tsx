@@ -17,3 +17,7 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
       .catch(err => console.log('⚠️ Errore Service Worker:', err));
   });
 }
+
+// Blocca il menu contestuale (tasto destro/lungo tocco) e il trascinamento immagini
+window.addEventListener('contextmenu', (e) => e.preventDefault());
+window.addEventListener('dragstart', (e) => e.preventDefault());

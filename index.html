@@ -27,13 +27,24 @@
       margin: 0;
       background: #0f172a;
       overscroll-behavior: none;
+      touch-action: none;
       height: 100vh;
       height: calc(var(--vh, 1vh) * 100);
       overflow: hidden;
+      /* Previene il menu "copia/salva" al tocco lungo */
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+      /* Gestione Notch / Safe Areas */
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      padding-left: env(safe-area-inset-left, 0px);
+      padding-right: env(safe-area-inset-right, 0px);
     }
 
     #root {
       height: 100%;
+      width: 100%;
     }
 
     .font-cinzel {
@@ -94,7 +105,7 @@
       -webkit-tap-highlight-color: transparent;
     }
   </style>
-  <script type="module" crossorigin src="/Jokerbriscoladigital/assets/index-BzvIUzKg.js"></script>
+  <script type="module" crossorigin src="/Jokerbriscoladigital/assets/index-CpZrNpkc.js"></script>
 </head>
 
 <body>
