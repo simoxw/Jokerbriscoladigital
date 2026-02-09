@@ -69,7 +69,7 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
     return 'border-white/5';
   };
 
-  const renderSlot = (playerId: number, playerName: string, positionLabel: string) => {
+  const renderSlot = (playerId: number, playerName: string, positionLabel: string, extra?: React.ReactNode) => {
     const p = players.find(pl => pl.id === playerId);
     if (!p) return null;
 
@@ -79,14 +79,23 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
     return (
       <div className="flex flex-col items-center justify-center gap-[1cqw] relative h-full">
 
-        <div className={`aspect-[2/3] border rounded-[1.5cqw] bg-black/40 flex items-center justify-center shadow-2xl transition-all duration-500 relative ${getCardContainerStyle(playerId)}`}
-          style={{ width: 'var(--card-w-table)' }}>
-          {card ? (
-            <div className="w-full h-full p-[0.3cqw]" style={{ transform: `rotate(${(card.id * 13) % 10 - 5}deg)` }}>
-              <ItalianCard card={card} />
+        {/* Wrapper per Carta e Messaggi (Extra) - Impedisce lo scaling dei messaggi alla vittoria */}
+        <div className="relative" style={{ width: 'var(--card-w-table)' }}>
+          <div className={`aspect-[2/3] border rounded-[1.5cqw] bg-black/40 flex items-center justify-center shadow-2xl transition-all duration-500 relative ${getCardContainerStyle(playerId)}`}>
+            {card ? (
+              <div className="w-full h-full p-[0.3cqw]" style={{ transform: `rotate(${(card.id * 13) % 10 - 5}deg)` }}>
+                <ItalianCard card={card} />
+              </div>
+            ) : (
+              <div className="text-[1.5cqw] text-amber-500 font-bold opacity-10 uppercase tracking-tighter">{positionLabel}</div>
+            )}
+          </div>
+
+          {/* Elemento Extra ancorato alla carta (per i messaggi di stato) - FUORI dallo scale */}
+          {extra && (
+            <div className="absolute left-[calc(100%+2cqw+15px)] top-1/2 -translate-y-1/2 pointer-events-none z-50">
+              {extra}
             </div>
-          ) : (
-            <div className="text-[1.5cqw] text-amber-500 font-bold opacity-10 uppercase tracking-tighter">{positionLabel}</div>
           )}
         </div>
 
@@ -109,9 +118,9 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
       <div className="relative flex-1 flex flex-col items-center justify-center p-[2cqw] pb-[3cqw] min-h-0 flex-shrink overflow-visible">
 
         {/* Lead Suit Indicator */}
-        <div className="absolute top-[1cqw] left-1/2 -translate-x-1/2 bg-white/5 px-[2cqw] py-[0.5cqw] rounded-full border border-white/10 flex items-center gap-[1.5cqw] animate-fade-in z-0">
-          <span className="text-[1.5cqw] uppercase font-bold text-white/40 tracking-widest">Mano:</span>
-          <span className="text-[2.5cqw]">{getSuitIcon(leadSuit)}</span>
+        <div className="absolute top-[1cqw] left-1/2 -translate-x-1/2 translate-y-[9px] bg-white/5 px-[3cqw] py-[1cqw] rounded-full border border-white/10 flex items-center gap-[1.5cqw] animate-fade-in z-0">
+          <span className="text-[1.8cqw] uppercase font-bold text-white/40 tracking-widest">Mano:</span>
+          <span className="text-[3.2cqw]">{getSuitIcon(leadSuit)}</span>
         </div>
 
         {/* Central Play Area - ELASTIC RECTANGLE - Proportional to screen height */}
@@ -124,16 +133,21 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
 
 
           {/* Deck Counter - Responsive Position */}
-          <div className="absolute top-[3%] left-1/2 -translate-x-1/2 text-center pointer-events-none z-10 transition-all">
-            <div className="flex flex-col items-center gap-[1cqw] bg-black/45 px-[2cqw] py-[0.5cqw] rounded-[2cqw] border border-white/10 backdrop-blur-md shadow-xl">
+          <div className="absolute top-[3%] left-1/2 -translate-x-1/2 translate-y-[17px] text-center pointer-events-none z-10 transition-all">
+            <div className="flex flex-col items-center gap-[1cqw] bg-black/45 px-[3cqw] py-[1.5cqw] rounded-[2cqw] border border-white/10 backdrop-blur-md shadow-xl">
               {/* Compact Card Stack Icon */}
-              <div className="relative w-[3cqw] h-[4.5cqw] mb-[0.5cqw]">
+              <div className="relative w-[4cqw] h-[5.5cqw] mb-[0.5cqw]">
                 <div className="absolute inset-0 bg-amber-800/40 border border-amber-600/30 rounded-[0.5cqw] translate-x-[0.2cqw] translate-y-[0.2cqw]"></div>
                 <div className="absolute inset-0 bg-amber-700/60 border border-amber-500/40 rounded-[0.5cqw]"></div>
               </div>
               <div className="flex items-center gap-[1cqw]">
-                <span className="text-[1.5cqw] uppercase font-black text-amber-500/50 tracking-[1px]">Mazzo</span>
-                <span className="text-[3cqw] font-bold text-white tabular-nums leading-none">{deckCount}</span>
+                <span className="text-[2.2cqw] uppercase font-black text-amber-500/50 tracking-[1px]">Mazzo</span>
+                <span className="text-[4cqw] font-bold text-white tabular-nums leading-none">{deckCount}</span>
+              </div>
+              {/* Round Indicator spostato qui */}
+              <div className="flex items-center gap-[1.5cqw] mt-[0.5cqw] pt-[1cqw] border-t border-white/10 w-full justify-center">
+                <span className="text-[1.8cqw] font-black text-slate-500 uppercase tracking-widest leading-none">Mano</span>
+                <span className="text-[3.2cqw] font-bold text-amber-400 leading-none">{game.roundCount}<span className="text-[2.2cqw] text-white/30 mx-[0.2cqw]">/</span>13</span>
               </div>
             </div>
           </div>
@@ -150,24 +164,23 @@ const GameTable: React.FC<GameTableProps> = ({ game, onCardClick, myPlayerId = 0
 
             {/* Row 2: Me (Center Bottom) */}
             <div className="col-start-2 row-start-2 flex items-end justify-center pb-[5%] relative">
-              {renderSlot(myIndex, 'TU', 'TU')}
+              {renderSlot(myIndex, 'TU', 'TU', (
+                <div className="flex flex-col items-start gap-[2.5cqw] transition-all whitespace-nowrap">
+                  {/* StatusPanel (Ora ancorato alla carta) */}
+                  <StatusPanel game={game} message={message} />
 
-              {/* StatusPanel e Turn Indicator - Posizione Mobile (Unica) */}
-              <div className="absolute left-[calc(100%+3cqw)] bottom-[10cqw] z-20 pointer-events-none flex flex-col items-start gap-[1cqw] transition-all">
-                {/* StatusPanel (Mano su Messaggio) */}
-                <StatusPanel game={game} message={message} />
-
-                {/* Turn Indicator (Fumetto) - Sotto lo StatusPanel */}
-                <div className="text-[2cqw] font-bold text-white/30 uppercase tracking-tighter flex items-center gap-[1.5cqw] bg-black/65 px-[3cqw] py-[2cqw] rounded-[3cqw] backdrop-blur-md border border-white/10 shadow-2xl whitespace-nowrap">
-                  <span className="w-[1.5cqw] h-[1.5cqw] rounded-full bg-amber-500 animate-pulse"></span>
-                  <div className="flex flex-col items-start leading-none gap-[0.5cqw]">
-                    <span className="text-[1.2cqw] text-white/40">Tocca a</span>
-                    <span className={`text-[2.2cqw] ${turnIndex === myIndex ? 'text-amber-400 font-black' : 'text-slate-200 font-bold'}`}>
-                      {turnIndex === myIndex ? 'TE' : players.find(p => p.id === turnIndex)?.name}
-                    </span>
+                  {/* Turn Indicator (Fumetto) - Sotto lo StatusPanel */}
+                  <div className="text-[2cqw] font-bold text-white/30 uppercase tracking-tighter flex items-center gap-[1.5cqw] bg-black/65 px-[3cqw] py-[2cqw] rounded-[3cqw] backdrop-blur-md border border-white/10 shadow-2xl">
+                    <span className="w-[1.5cqw] h-[1.5cqw] rounded-full bg-amber-500 animate-pulse"></span>
+                    <div className="flex flex-col items-start leading-none gap-[0.5cqw]">
+                      <span className="text-[1.2cqw] text-white/40">Tocca a</span>
+                      <span className={`text-[2.2cqw] ${turnIndex === myIndex ? 'text-amber-400 font-black' : 'text-slate-200 font-bold'}`}>
+                        {turnIndex === myIndex ? 'TE' : players.find(p => p.id === turnIndex)?.name}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>

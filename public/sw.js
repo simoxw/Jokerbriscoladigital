@@ -1,76 +1,91 @@
-const CACHE_NAME = 'joker-briscola-cards-v7'; // Bump version
-const ASSETS_TO_CACHE = [
+const CACHE_VERSION = 'v8';
+const STATIC_CACHE = `joker-static-${CACHE_VERSION}`;
+const DYNAMIC_CACHE = `joker-dynamic-${CACHE_VERSION}`;
+const IMAGES_CACHE = `joker-images-${CACHE_VERSION}`;
+
+// Asset critici per l'avvio
+const STATIC_ASSETS = [
     './',
     './index.html',
     './manifest.json',
-    './assets/icon.png',
+    './assets/icon.png'
 ];
 
+// Install: Pre-cache asset critici
 self.addEventListener('install', (event) => {
     self.skipWaiting();
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(ASSETS_TO_CACHE);
+        caches.open(STATIC_CACHE).then((cache) => {
+            return cache.addAll(STATIC_ASSETS);
         })
     );
 });
 
+// Activate: Pulizia vecchie cache
 self.addEventListener('activate', (event) => {
     event.waitUntil(
-        Promise.all([
-            self.clients.claim(),
-            caches.keys().then((cacheNames) => {
-                return Promise.all(
-                    cacheNames.map((cacheName) => {
-                        if (cacheName !== CACHE_NAME) {
-                            return caches.delete(cacheName);
-                        }
-                    })
-                );
-            })
-        ])
+        caches.keys().then((keys) => {
+            return Promise.all(
+                keys.filter((key) =>
+                    key !== STATIC_CACHE &&
+                    key !== DYNAMIC_CACHE &&
+                    key !== IMAGES_CACHE
+                ).map((key) => caches.delete(key))
+            );
+        }).then(() => self.clients.claim())
     );
 });
 
+// Fetch Strategy
 self.addEventListener('fetch', (event) => {
     const { request } = event;
     const url = new URL(request.url);
 
-    const isInternal = url.host === location.host;
-    const isCardImage = url.pathname.includes('/assets/cards/') || url.pathname.endsWith('.webp');
-
-    // Strategia per le CARTE: Cache-First
-    if (isCardImage) {
+    // 1. CARTE e IMMAGINI: Cache-First
+    if (url.pathname.includes('/assets/cards/') || url.pathname.endsWith('.webp') || url.pathname.endsWith('.png')) {
         event.respondWith(
-            caches.match(request).then((res) => {
-                return res || fetch(request).then((fetchRes) => {
-                    const responseToCache = fetchRes.clone();
-                    caches.open(CACHE_NAME).then((cache) => {
-                        cache.put(request, responseToCache);
-                    });
-                    return fetchRes;
+            caches.match(request).then((cached) => {
+                if (cached) return cached;
+                return fetch(request).then((response) => {
+                    if (!response || response.status !== 200) return response;
+                    const responseClone = response.clone();
+                    caches.open(IMAGES_CACHE).then((cache) => cache.put(request, responseClone));
+                    return response;
                 });
             })
         );
         return;
     }
 
-    // Strategia per FILE LOGICI (HTML, JS, CSS, JSON): Network-First
-    if (isInternal) {
+    // 2. SUONI: Cache-First
+    if (url.pathname.includes('/assets/sounds/')) {
         event.respondWith(
-            fetch(request)
-                .then((fetchRes) => {
-                    if (fetchRes && fetchRes.status === 200) {
-                        const responseToCache = fetchRes.clone();
-                        caches.open(CACHE_NAME).then((cache) => {
-                            cache.put(request, responseToCache);
-                        });
-                    }
-                    return fetchRes;
-                })
-                .catch(() => {
-                    return caches.match(request);
-                })
+            caches.match(request).then((cached) => {
+                return cached || fetch(request).then((response) => {
+                    const responseClone = response.clone();
+                    caches.open(STATIC_CACHE).then((cache) => cache.put(request, responseClone));
+                    return response;
+                });
+            })
+        );
+        return;
+    }
+
+    // 3. LOGICA (HTML, JS, CSS): Stale-While-Revalidate
+    // Permette aggiornamenti rapidi mantenendo l'offline funzionante
+    if (url.origin === location.origin) {
+        event.respondWith(
+            caches.open(DYNAMIC_CACHE).then((cache) => {
+                return cache.match(request).then((cached) => {
+                    const fetchPromise = fetch(request).then((response) => {
+                        if (response && response.status === 200) {
+                            cache.put(request, response.clone());
+                        }
+                        return response;
+                    });
+                    return cached || fetchPromise;
+                });
+            })
         );
     }
 });

@@ -3,12 +3,13 @@ const STATIC_CACHE = `joker-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `joker-dynamic-${CACHE_VERSION}`;
 const IMAGES_CACHE = `joker-images-${CACHE_VERSION}`;
 
-// Asset critici per l'avvio
 const STATIC_ASSETS = [
     './',
     './index.html',
     './manifest.json',
-    './assets/icon.png'
+    './assets/icon.png',
+    './assets/sounds/carddrop2-92718.mp3',
+    './assets/sounds/pageturn-102978.mp3'
 ];
 
 // Install: Pre-cache asset critici
