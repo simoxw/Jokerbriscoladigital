@@ -49,4 +49,24 @@ Questo documento riassume le principali funzioni e le modifiche architettoniche 
 
 ## 8. Ottimizzazioni Desktop Premium
 - **Constraint-Based Layout**: Rimossi tutti i prefissi `lg:` e le posizioni `fixed`. L'interfaccia è ora una colonna unica e coerente che si adatta elasticamente al contenitore centrale.
-- **Shadow & Depth**: Aggiunte ombre profonde (`shadow-[0_0_80px_rgba(0,0,0,0.6)]`) e bordi sottili al container principale per staccarlo con eleganza dallo sfondo gradiente su monitor grandi.
+## 9. Ancoraggio Messaggi & Isolamento Scaling
+- **File**: `src/components/GameTable.tsx`
+- **Ancoraggio a Metà Carta**: I messaggi di stato ("Presa", "Turno") sono stati ancorati direttamente al contenitore della carta giocata (`TU`) utilizzando un wrapper relativo.
+- **Isolamento Scaling**: I messaggi sono posizionati come fratelli della carta, non figli. Questo impedisce che ereditino l'effetto `scale-110` della vittoria, rimanendo leggibili e di dimensione costante mentre la carta si ingrandisce.
+- **Offset Orizzontale**: Applicato un offset di `+15px` verso destra rispetto alla carta per un bilanciamento visivo ottimale.
+
+## 10. Regolazione Millimetrica Mazzo & Seme
+- **File**: `src/App.tsx`
+- **Posizionamento Deck**: Il mazzo è stato abbassato di **17px** rispetto al centro teorico per evitare sovrapposizioni con l'indicatore del seme.
+- **Indicatore Seme**: Alzato di **3px** per massimizzare la separazione visiva senza toccare il bordo superiore del tavolo.
+
+## 11. PWA & UX Mobile Avanzata
+- **File**: `index.html`, `src/main.tsx`, `public/sw.js`
+- **Configurazione PWA**: 
+    - Ottimizzato `manifest.json` e `index.html` con path relativi (`./`) per compatibilità con sottocartelle GitHub Pages (`/Jokerbriscoladigital/`).
+    - Aggiunto supporto completo `apple-touch-icon` e metatag Android.
+- **Protezioni UX**:
+    - **Blocco Zoom**: Disabilitato tramite `viewport` per un feeling da app nativa.
+    - **Gestione Notch**: Implementata tramite `padding: env(safe-area-inset-...)`.
+    - **Blocco Menu**: Disabilitato `contextmenu` (tasto destro/lungo tocco) e `dragstart` (trascinamento immagini) direttamente in `index.html` per una protezione immediata.
+- **Service Worker (v8.1)**: Implementata strategia *Cache-First* per le immagini delle carte e *Stale-While-Revalidate* per il codice, garantendo velocità e giocabilità offline.
